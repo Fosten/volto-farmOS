@@ -13,6 +13,9 @@
   "scripts": {
     "i18n": "rm -rf build/messages && NODE_ENV=production i18n --addon"
   },
+  "dependencies": {
+    "@farmOS/farmOS.js": "farmOS/farmOS.js"
+  },
   "devDependencies": {
     "@plone/scripts": "*"
   }
