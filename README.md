@@ -1,7 +1,7 @@
 # volto-farmOS
 Volto add-on to pull data from the farmOS API
 
-# Install via package.json
+## Install via package.json
 ```shell
 "addons": [
     "@Fosten/volto-farmOS"
@@ -11,7 +11,7 @@ Volto add-on to pull data from the farmOS API
 }
 ```
 
-# Create a .env file in the project root
+## Create a .env file in the project root
 
 ```shell
 RAZZLE_FARMOS_API_HOST=https://url:port
