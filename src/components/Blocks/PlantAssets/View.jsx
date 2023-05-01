@@ -20,7 +20,7 @@ const View = (props) => {
     async function useResponse() {
       try {
         const response = await axios.get(
-          `https://farmdev.duckdns.org:2443/api/asset/plant`,
+          `${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`,
           {headers: {
             'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`
           }}
