@@ -1,5 +1,5 @@
 import '@plone/volto/config';
-import customBlocks from '@Fosten/volto-farmOS/components/Blocks/customBlocks'
+import customBlocks from '@Fosten/volto-farmOS/components/Blocks/customBlocks';
 
 const applyConfig = (config) => {
   config.blocks = {
@@ -8,7 +8,7 @@ const applyConfig = (config) => {
       ...config.blocks.blocksConfig,
       ...customBlocks,
     },
-  }
+  };
   return config;
 };
 

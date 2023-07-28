@@ -34,6 +34,6 @@ const customBlocks = {
       addPermission: [],
       view: [],
     },
-  }
+  },
 };
 export default customBlocks;

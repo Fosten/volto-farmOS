@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Segment} from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 import { injectIntl } from 'react-intl';
 import { SelectWidget } from '@plone/volto/components';
 
@@ -18,29 +18,29 @@ const Sidebar = (props) => {
         required={true}
         value={data.plant_type_selector ?? false}
         choices={[
-          ['Celery','Celery'],
-          ['Tomato','Tomato'],
-          ['Pepper','Pepper'],
-          ['Brown Onion','Brown Onion'],
-          ['Green Onion','Green Onion'],
-          ['Annuals','Annuals'],
-          ['Daisy','Daisy'],
-          ['Black-Eyed Susan','Black-Eyed Susan'],
-          ['Iris','Iris'],
-          ['Bearded Iris','Bearded Iris'],
-          ['Potato','Potato'],
-          ['Blueberry','Blueberry'],
-          ['Carrots','Carrots']
+          ['Celery', 'Celery'],
+          ['Tomato', 'Tomato'],
+          ['Pepper', 'Pepper'],
+          ['Brown Onion', 'Brown Onion'],
+          ['Green Onion', 'Green Onion'],
+          ['Annuals', 'Annuals'],
+          ['Daisy', 'Daisy'],
+          ['Black-Eyed Susan', 'Black-Eyed Susan'],
+          ['Iris', 'Iris'],
+          ['Bearded Iris', 'Bearded Iris'],
+          ['Potato', 'Potato'],
+          ['Blueberry', 'Blueberry'],
+          ['Carrots', 'Carrots'],
         ]}
         onChange={(name, value) => {
-            onChangeBlock(block, {
-              ...data,
-              [name]: value,
-            });
+          onChangeBlock(block, {
+            ...data,
+            [name]: value,
+          });
         }}
       />
     </Segment.Group>
-    );
+  );
 };
 
 Sidebar.propTypes = {
