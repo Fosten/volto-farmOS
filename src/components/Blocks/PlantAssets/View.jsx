@@ -17,10 +17,6 @@ import farmOS from '@farmOS/farmOS.js';
 
 const View = (props) => {
   const [response, setState] = useState({});
-  const [response2, setState2] = useState({});
-  const [response3, setState3] = useState({});
-  const [locationURL, setState4] = useState('null');
-  const [planttypeURL, setState5] = useState('null');
 
   const APIlogin = () => {
     const remoteConfig = {
@@ -55,7 +51,6 @@ const View = (props) => {
       for (let count = 0; count < 13; count++) {
         const locationURL =
           response.data.data[count].relationships.location.links.related.href;
-        setState4(locationURL);
         window.localStorage.setItem(
           `Location${count}`,
           JSON.stringify(locationURL),
@@ -70,7 +65,6 @@ const View = (props) => {
             },
           },
         );
-        setState2(response2.data);
         window.localStorage.setItem(
           `LResponse${count}`,
           JSON.stringify(response2),
@@ -78,7 +72,6 @@ const View = (props) => {
 
         const planttypeURL =
           response.data.data[count].relationships.plant_type.links.related.href;
-        setState5(planttypeURL);
         window.localStorage.setItem(
           `Planttype${count}`,
           JSON.stringify(planttypeURL),
@@ -93,7 +86,6 @@ const View = (props) => {
             },
           },
         );
-        setState3(response3.data);
         window.localStorage.setItem(
           `PResponse${count}`,
           JSON.stringify(response3),

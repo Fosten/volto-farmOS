@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from 'semantic-ui-react';
 import { injectIntl } from 'react-intl';
 import { SelectWidget } from '@plone/volto/components';
 
 const Sidebar = (props) => {
-  const { data, block, value, onChangeBlock } = props;
+  const { data, block, onChangeBlock } = props;
 
   return (
     <Segment.Group raised>
