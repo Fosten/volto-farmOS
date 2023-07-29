@@ -21,7 +21,24 @@ const View = (props) => {
   const [response3, setState3] = useState({});
   const [locationURL, setState4] = useState('null');
   const [planttypeURL, setState5] = useState('null');
-  async function useResponse() {
+
+  const APIlogin = () => {
+    const remoteConfig = {
+      host: window.env.RAZZLE_FARMOS_API_HOST,
+      clientId: window.env.RAZZLE_FARMOS_API_CLIENT_ID,
+      clientSecret: window.env.RAZZLE_FARMOS_API_CLIENT_SECRET,
+      scope: window.env.RAZZLE_FARMOS_API_SCOPE,
+      getToken: () => JSON.parse(localStorage.getItem('token')),
+      setToken: (token) => localStorage.setItem('token', JSON.stringify(token)),
+    };
+    const options = { remote: remoteConfig };
+    const farm = farmOS(options);
+    const username = window.env.RAZZLE_FARMOS_API_USERNAME;
+    const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
+    return farm.remote.authorize(username, password);
+  };
+
+  async function myResponse() {
     try {
       const response = await axios.get(
         `${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`,
@@ -87,20 +104,11 @@ const View = (props) => {
       console.log(err);
     }
   }
+
   useEffect(() => {
-    const remoteConfig = {
-      host: window.env.RAZZLE_FARMOS_API_HOST,
-      clientId: window.env.RAZZLE_FARMOS_API_CLIENT_ID,
-      clientSecret: window.env.RAZZLE_FARMOS_API_CLIENT_SECRET,
-      scope: window.env.RAZZLE_FARMOS_API_SCOPE,
-      getToken: () => JSON.parse(localStorage.getItem('token')),
-      setToken: (token) => localStorage.setItem('token', JSON.stringify(token)),
-    };
-    const options = { remote: remoteConfig };
-    const farm = farmOS(options);
-    const username = window.env.RAZZLE_FARMOS_API_USERNAME;
-    const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
-    farm.remote.authorize(username, password).then(useResponse());
+    const farmOSlogin = APIlogin();
+    const thisresponse = myResponse();
+    farmOSlogin.then(thisresponse);
   }, []);
 
   const renderthis = () => {
