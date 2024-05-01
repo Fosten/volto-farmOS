@@ -9,21 +9,7 @@ import farmOS from '@farmOS/farmOS.js';
  * @module components/manage/Blocks/Description/View
  */
 
-const plantVar = [
-  'Celery',
-  'Tomato',
-  'Pepper',
-  'Brown Onion',
-  'Green Onion',
-  'Annuals',
-  'Daisy',
-  'Black-Eyed Susan',
-  'Iris',
-  'Bearded Iris',
-  'Potato',
-  'Blueberry',
-  'Carrots',
-];
+const plantVar = ['Celery', 'Tomato', 'Pepper', 'Brown Onion', 'Green Onion', 'Annuals', 'Daisy', 'Black-Eyed Susan', 'Iris', 'Bearded Iris', 'Potato', 'Blueberry', 'Carrots'];
 
 /**
  * View description block class.
@@ -52,60 +38,31 @@ const View = (props) => {
 
   async function myResponse() {
     try {
-      const response = await axios.get(
-        `${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`,
-        {
-          headers: {
-            Authorization: `Bearer ${
-              JSON.parse(localStorage.getItem('token'))['access_token']
-            }`,
-          },
+      const response = await axios.get(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
         },
-      );
+      });
       setState(response.data);
 
       for (let count = 0; count < 13; count++) {
-        const locationURL =
-          response.data.data[count].relationships.location.links.related.href;
-        window.localStorage.setItem(
-          `Location${count}`,
-          JSON.stringify(locationURL),
-        );
-        const response2 = await axios.get(
-          `${JSON.parse(localStorage.getItem(`Location${count}`))}`,
-          {
-            headers: {
-              Authorization: `Bearer ${
-                JSON.parse(localStorage.getItem('token'))['access_token']
-              }`,
-            },
+        const locationURL = response.data.data[count].relationships.location.links.related.href;
+        window.localStorage.setItem(`Location${count}`, JSON.stringify(locationURL));
+        const response2 = await axios.get(`${JSON.parse(localStorage.getItem(`Location${count}`))}`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
           },
-        );
-        window.localStorage.setItem(
-          `LResponse${count}`,
-          JSON.stringify(response2),
-        );
+        });
+        window.localStorage.setItem(`LResponse${count}`, JSON.stringify(response2));
 
-        const planttypeURL =
-          response.data.data[count].relationships.plant_type.links.related.href;
-        window.localStorage.setItem(
-          `Planttype${count}`,
-          JSON.stringify(planttypeURL),
-        );
-        const response3 = await axios.get(
-          `${JSON.parse(localStorage.getItem(`Planttype${count}`))}`,
-          {
-            headers: {
-              Authorization: `Bearer ${
-                JSON.parse(localStorage.getItem('token'))['access_token']
-              }`,
-            },
+        const planttypeURL = response.data.data[count].relationships.plant_type.links.related.href;
+        window.localStorage.setItem(`Planttype${count}`, JSON.stringify(planttypeURL));
+        const response3 = await axios.get(`${JSON.parse(localStorage.getItem(`Planttype${count}`))}`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
           },
-        );
-        window.localStorage.setItem(
-          `PResponse${count}`,
-          JSON.stringify(response3),
-        );
+        });
+        window.localStorage.setItem(`PResponse${count}`, JSON.stringify(response3));
       }
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -139,17 +96,11 @@ const View = (props) => {
             </Table.Header>
             <Table.Body>
               {response.data
-                ?.filter((plant) =>
-                  plant.attributes.name.includes(data?.plant_type_selector),
-                )
+                ?.filter((plant) => plant.attributes.name.includes(data?.plant_type_selector))
                 .map((item, i) => {
                   const position = plantVar.indexOf(data?.plant_type_selector);
-                  let newObject1 = JSON.parse(
-                    localStorage.getItem(`LResponse${position}`),
-                  );
-                  let newObject2 = JSON.parse(
-                    localStorage.getItem(`PResponse${position}`),
-                  );
+                  let newObject1 = JSON.parse(localStorage.getItem(`LResponse${position}`));
+                  let newObject2 = JSON.parse(localStorage.getItem(`PResponse${position}`));
                   return (
                     <Table.Row key={i}>
                       <td>{item.attributes.name}</td>

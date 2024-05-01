@@ -1,9 +1,6 @@
 module.exports = {
   testMatch: ['**/src/addons/**/?(*.)+(spec|test).[jt]s?(x)'],
-  collectCoverageFrom: [
-    'src/addons/**/src/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts',
-  ],
+  collectCoverageFrom: ['src/addons/**/src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
   transformIgnorePatterns: ['node_modules/(?!(volto-slate|@plone/volto)/)'],
   moduleNameMapper: {
     '@plone/volto/cypress': '<rootDir>/node_modules/@plone/volto/cypress',
@@ -12,8 +9,7 @@ module.exports = {
     '@package/(.*)$': '<rootDir>/src/$1',
     '@root/(.*)$': '<rootDir>/src/$1',
     '~/(.*)$': '<rootDir>/src/$1',
-    'load-volto-addons':
-      '<rootDir>/node_modules/@plone/volto/jest-addons-loader.js',
+    'load-volto-addons': '<rootDir>/node_modules/@plone/volto/jest-addons-loader.js',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   transform: {
