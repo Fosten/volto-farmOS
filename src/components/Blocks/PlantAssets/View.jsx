@@ -17,6 +17,7 @@ import farmOS from '@farmOS/farmOS.js';
 
 const View = (props) => {
   const [response, setState] = useState({});
+  const [isAxiosBusy, setAxiosBusy] = useState(true);
 
   const APIlogin = () => {
     const remoteConfig = {
@@ -34,48 +35,50 @@ const View = (props) => {
     return farm.remote.authorize(username, password);
   };
 
-  async function myResponse() {
-    try {
-      const response = await axios.get(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-        },
-      });
-      setState(response.data);
-
-      for (let count = 0; count < 13; count++) {
-        const locationURL = response.data.data[count].relationships.location.links.related.href;
-        window.localStorage.setItem(`Location${count}`, JSON.stringify(locationURL));
-        const response2 = await axios.get(`${JSON.parse(localStorage.getItem(`Location${count}`))}`, {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-          },
-        });
-        window.localStorage.setItem(`LResponse${count}`, JSON.stringify(response2));
-
-        const planttypeURL = response.data.data[count].relationships.plant_type.links.related.href;
-        window.localStorage.setItem(`Planttype${count}`, JSON.stringify(planttypeURL));
-        const response3 = await axios.get(`${JSON.parse(localStorage.getItem(`Planttype${count}`))}`, {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-          },
-        });
-        window.localStorage.setItem(`PResponse${count}`, JSON.stringify(response3));
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
-  }
-
   useEffect(() => {
     const farmOSlogin = APIlogin();
-    const thisresponse = myResponse();
-    farmOSlogin.then(thisresponse);
+    async function myResponse() {
+      try {
+        await APIlogin();
+        const response = await axios.get(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
+          },
+        });
+        setState(response.data);
+
+        for (let count = 0; count < 2; count++) {
+          const origplantID = response.data?.data[count].id;
+
+          const locationURL = response.data?.data[count].relationships.location.links.related.href;
+          const response2 = await axios.get(JSON.parse(`${JSON.stringify(locationURL)}`), {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
+            },
+          });
+          window.localStorage.setItem(`LResponse${origplantID}`, JSON.stringify(response2));
+
+          const planttypeURL = response.data.data[count].relationships.plant_type.links.related.href;
+          const response3 = await axios.get(JSON.parse(`${JSON.stringify(planttypeURL)}`), {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
+            },
+          });
+          window.localStorage.setItem(`PResponse${origplantID}`, JSON.stringify(response3));
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      }
+      setAxiosBusy(false);
+    }
+    farmOSlogin.then(myResponse);
   }, []);
 
   const renderthis = () => {
-    return (
+    return isAxiosBusy ? (
+      <div className="App">Loading...</div>
+    ) : (
       <div className="container">
         <h2>Plant Assets</h2>
         <div className="plantassets">
@@ -85,25 +88,26 @@ const View = (props) => {
                 <th>Name</th>
                 <th>Status</th>
                 <th>Plant Type</th>
-                <th>Location1</th>
-                <th>Location2</th>
-                <th>Location3</th>
-                <th>Location4</th>
-                <th>Location5</th>
+                <th>Location 1</th>
+                <th>Location 2</th>
+                <th>Location 3</th>
+                <th>Location 4</th>
+                <th>Location 5</th>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {response.data?.map((item, i) => {
-                let newObject1 = JSON.parse(localStorage.getItem(`LResponse${i}`));
-                let newObject2 = JSON.parse(localStorage.getItem(`PResponse${i}`));
+                const matchingplantID = item.id;
+                let newObjectL = JSON.parse(localStorage.getItem(`LResponse${matchingplantID}`));
+                let newObjectP = JSON.parse(localStorage.getItem(`PResponse${matchingplantID}`));
                 return (
                   <Table.Row key={i}>
                     <td>{item.attributes.name}</td>
                     <td>{item.attributes.status}</td>
-                    {newObject2.data.data?.map((item, i) => {
+                    {newObjectP.data.data?.map((item, i) => {
                       return <td key={i}>{item.attributes.name}</td>;
                     })}
-                    {newObject1.data.data?.map((item, i) => {
+                    {newObjectL.data.data?.map((item, i) => {
                       return <td key={i}>{item.attributes.name}</td>;
                     })}
                   </Table.Row>
