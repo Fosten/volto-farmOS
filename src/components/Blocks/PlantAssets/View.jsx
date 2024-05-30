@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Table } from 'semantic-ui-react';
 import axios from 'axios';
 import farmOS from '@farmOS/farmOS.js';
+const _ = require('lodash');
 
 /**
  * View description block.
@@ -35,6 +36,12 @@ const View = (props) => {
     return farm.remote.authorize(username, password);
   };
 
+  function customizer(objValue, srcValue) {
+    if (_.isArray(objValue)) {
+      return objValue.concat(srcValue);
+    }
+  }
+
   useEffect(() => {
     const farmOSlogin = APIlogin();
     async function myResponse(url) {
@@ -45,6 +52,7 @@ const View = (props) => {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
           },
         });
+        console.log(response.data);
         setState(response.data);
 
         for (let count = 0; count < 2; count++) {
