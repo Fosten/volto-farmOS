@@ -47,7 +47,7 @@ const View = (props) => {
         });
         setState(response.data);
 
-        for (let count = 0; count < 2; count++) {
+        for (let count = 0; count < 52; count++) {
           const origplantID = response.data?.data[count].id;
 
           const locationURL = response.data?.data[count].relationships.location.links.related.href;
@@ -56,15 +56,19 @@ const View = (props) => {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
             },
           });
-          window.localStorage.setItem(`LResponse${origplantID}`, JSON.stringify(response2));
-
+          var arr = [];
+          for (let Lcount = 0; Lcount < 5; Lcount++) {
+            var i = response2.data.data[Lcount]?.attributes.name;
+            arr.push(i);
+            window.localStorage.setItem(`LResponse${origplantID}`, JSON.stringify(arr));
+          }
           const planttypeURL = response.data.data[count].relationships.plant_type.links.related.href;
           const response3 = await axios.get(JSON.parse(`${JSON.stringify(planttypeURL)}`), {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
             },
           });
-          window.localStorage.setItem(`PResponse${origplantID}`, JSON.stringify(response3));
+          window.localStorage.setItem(`PResponse${origplantID}`, response3.data.data[0]?.attributes.name);
         }
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -99,16 +103,14 @@ const View = (props) => {
               {response.data?.map((item, i) => {
                 const matchingplantID = item.id;
                 let newObjectL = JSON.parse(localStorage.getItem(`LResponse${matchingplantID}`));
-                let newObjectP = JSON.parse(localStorage.getItem(`PResponse${matchingplantID}`));
+                let newObjectP = localStorage.getItem(`PResponse${matchingplantID}`);
                 return (
                   <Table.Row key={i}>
                     <td>{item.attributes.name}</td>
                     <td>{item.attributes.status}</td>
-                    {newObjectP.data.data?.map((item, i) => {
-                      return <td key={i}>{item.attributes.name}</td>;
-                    })}
-                    {newObjectL.data.data?.map((item, i) => {
-                      return <td key={i}>{item.attributes.name}</td>;
+                    <td>{newObjectP}</td>
+                    {newObjectL?.map((item, i) => {
+                      return <td key={i}>{item}</td>;
                     })}
                   </Table.Row>
                 );
