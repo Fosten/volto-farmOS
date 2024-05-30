@@ -37,17 +37,17 @@ const View = (props) => {
 
   useEffect(() => {
     const farmOSlogin = APIlogin();
-    async function myResponse() {
+    async function myResponse(url) {
       try {
         await APIlogin();
-        const response = await axios.get(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`, {
+        const response = await axios.get(url, {
           headers: {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
           },
         });
         setState(response.data);
 
-        for (let count = 0; count < 52; count++) {
+        for (let count = 0; count < 2; count++) {
           const origplantID = response.data?.data[count].id;
 
           const locationURL = response.data?.data[count].relationships.location.links.related.href;
@@ -76,7 +76,7 @@ const View = (props) => {
       }
       setAxiosBusy(false);
     }
-    farmOSlogin.then(myResponse);
+    farmOSlogin.then(myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`));
   }, []);
 
   const renderthis = () => {
