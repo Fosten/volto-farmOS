@@ -18,7 +18,7 @@ const _ = require('lodash');
 
 const View = (props) => {
   const { data } = props;
-  const [response, setState] = useState({});
+  const [combodata, setState] = useState({});
   const [isAxiosBusy, setAxiosBusy] = useState(true);
 
   const APIlogin = () => {
@@ -45,20 +45,28 @@ const View = (props) => {
 
   useEffect(() => {
     const farmOSlogin = APIlogin();
-    async function myResponse(url) {
+    async function myResponse(url, combodata) {
+      combodata = combodata || {};
       try {
         await APIlogin();
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-          },
-        });
-        setState(response.data);
+        await axios
+          .get(url, {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
+            },
+          })
+          .then(async (response) => {
+            _.mergeWith(combodata, response.data, customizer);
+            if (typeof response.data.links.next?.href !== 'undefined') {
+              await myResponse(response.data.links.next.href, combodata);
+            }
+          });
+        setState(combodata);
 
         for (let count = 0; count < 52; count++) {
-          const origplantID = response.data?.data[count].id;
+          const origplantID = combodata?.data[count].id;
 
-          const locationURL = response.data?.data[count].relationships.location.links.related.href;
+          const locationURL = combodata?.data[count].relationships.location.links.related.href;
           const response2 = await axios.get(JSON.parse(`${JSON.stringify(locationURL)}`), {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
@@ -70,7 +78,7 @@ const View = (props) => {
             arr.push(i);
             window.localStorage.setItem(`LResponse${origplantID}`, JSON.stringify(arr));
           }
-          const planttypeURL = response.data.data[count].relationships.plant_type.links.related.href;
+          const planttypeURL = combodata?.data[count].relationships.plant_type.links.related.href;
           const response3 = await axios.get(JSON.parse(`${JSON.stringify(planttypeURL)}`), {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
@@ -81,6 +89,7 @@ const View = (props) => {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err);
+        setAxiosBusy(true);
       }
       setAxiosBusy(false);
     }
@@ -108,8 +117,8 @@ const View = (props) => {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {response.data
-                ?.filter((plant) => plant.attributes.name.includes(data?.plant_type_selector))
+              {combodata?.data
+                .filter((plant) => plant.attributes.name.includes(data?.plant_type_selector))
                 .map((item, i) => {
                   const matchingplantID = item.id;
                   let newObjectL = JSON.parse(localStorage.getItem(`LResponse${matchingplantID}`));
