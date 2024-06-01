@@ -62,7 +62,7 @@ const View = (props) => {
           });
         setState(combodata);
 
-        for (let count = 0; count < 52; count++) {
+        for (let count = 0; count < combodata.data.length; count++) {
           const origplantID = combodata?.data[count].id;
 
           const locationURL = combodata?.data[count].relationships.location.links.related.href;
