@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import { SelectWidget } from '@plone/volto/components';
 import axios from 'axios';
 import farmOS from '@farmOS/farmOS.js';
+import _ from 'lodash';
 
 const Sidebar = (props) => {
   const { data, block, onChangeBlock } = props;
@@ -27,16 +28,30 @@ const Sidebar = (props) => {
     return farm.remote.authorize(username, password);
   };
 
+  function customizer(objValue, srcValue) {
+    if (_.isArray(objValue)) {
+      return objValue.concat(srcValue);
+    }
+  }
+
   useEffect(() => {
     const farmOSlogin = APIlogin();
-    async function myResponse(url) {
+    async function myResponse(url, combodata) {
+      combodata = combodata || {};
       try {
         await APIlogin();
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-          },
-        });
+        await axios
+          .get(url, {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
+            },
+          })
+          .then(async (response) => {
+            _.mergeWith(combodata, response.data, customizer);
+            if (typeof response.data.links.next?.href !== 'undefined') {
+              await myResponse(response.data.links.next.href, combodata);
+            }
+          });
         var arr = [];
         function combineTwo(inputArray) {
           //Starting with the beginning of the array, this function combines index 0 with 1, 2 with 3, and so on for the entire length of the array
@@ -47,9 +62,9 @@ const Sidebar = (props) => {
           }
           return result;
         }
-        for (let count = 0; count < response.data.data.length; count++) {
-          var ok = response.data.data[count].attributes.name;
-          var ok2 = response.data.data[count].id;
+        for (let count = 0; count < combodata.data.length; count++) {
+          var ok = combodata.data[count].attributes.name;
+          var ok2 = combodata.data[count].id;
           arr.push(ok2);
           arr.push(ok);
         }

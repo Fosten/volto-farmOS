@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Table } from 'semantic-ui-react';
 import axios from 'axios';
 import farmOS from '@farmOS/farmOS.js';
-const _ = require('lodash');
+import _ from 'lodash';
 
 /**
  * View description block.
