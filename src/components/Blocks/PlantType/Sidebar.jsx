@@ -49,7 +49,8 @@ const Sidebar = (props) => {
         }
         for (let count = 0; count < response.data.data.length; count++) {
           var ok = response.data.data[count].attributes.name;
-          arr.push(ok);
+          var ok2 = response.data.data[count].id;
+          arr.push(ok2);
           arr.push(ok);
         }
         const newarray = combineTwo(arr);

@@ -19,6 +19,8 @@ const _ = require('lodash');
 const View = (props) => {
   const { data } = props;
   const [combodata, setState] = useState({});
+  const [arrayP, setState2] = useState({});
+  const [arrayL, setState3] = useState({});
   const [isAxiosBusy, setAxiosBusy] = useState(true);
 
   const APIlogin = () => {
@@ -62,6 +64,8 @@ const View = (props) => {
             }
           });
         setState(combodata);
+        var arrayL = [];
+        var arrayP = [];
 
         for (let count = 0; count < combodata.data.length; count++) {
           const origplantID = combodata?.data[count].id;
@@ -76,16 +80,24 @@ const View = (props) => {
           for (let Lcount = 0; Lcount < 5; Lcount++) {
             var i = response2.data.data[Lcount]?.attributes.name;
             arr.push(i);
-            window.localStorage.setItem(`LResponse${origplantID}`, JSON.stringify(arr));
           }
+          const objectLName = {
+            [`${origplantID}`]: arr,
+          };
+          arrayL.push({ objectLName });
           const planttypeURL = combodata?.data[count].relationships.plant_type.links.related.href;
           const response3 = await axios.get(JSON.parse(`${JSON.stringify(planttypeURL)}`), {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
             },
           });
-          window.localStorage.setItem(`PResponse${origplantID}`, response3.data.data[0]?.attributes.name);
+          const objectPName = {
+            [`${origplantID}`]: response3.data.data[0]?.attributes.name,
+          };
+          arrayP.push({ objectPName });
         }
+        setState3(arrayL);
+        setState2(arrayP);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err);
@@ -101,7 +113,7 @@ const View = (props) => {
       <div className="App">Loading...</div>
     ) : (
       <div className="container">
-        <h2>{data?.plant_type_selector} Plants History</h2>
+        <h2>Plant Assets</h2>
         <div className="plantassets">
           <Table celled>
             <Table.Header>
@@ -118,17 +130,29 @@ const View = (props) => {
             </Table.Header>
             <Table.Body>
               {combodata?.data
-                .filter((plant) => plant.attributes.name.includes(data?.plant_type_selector))
+                .filter((plant) => plant.relationships.plant_type.data[0].id.includes(data?.plant_type_selector))
                 .map((item, i) => {
                   const matchingplantID = item.id;
-                  let newObjectL = JSON.parse(localStorage.getItem(`LResponse${matchingplantID}`));
-                  let newObjectP = localStorage.getItem(`PResponse${matchingplantID}`);
+                  for (let p of arrayP) {
+                    for (const z of Object.values(p)) {
+                      for (const y of Object.keys(z)) {
+                        if (y === matchingplantID) var valueP = Object.values(z);
+                      }
+                    }
+                  }
+                  for (let p of arrayL) {
+                    for (const z of Object.values(p)) {
+                      for (const y of Object.keys(z)) {
+                        if (y === matchingplantID) var valueL = Object.values(z)[0];
+                      }
+                    }
+                  }
                   return (
                     <Table.Row key={i}>
                       <td>{item.attributes.name}</td>
                       <td>{item.attributes.status}</td>
-                      <td>{newObjectP}</td>
-                      {newObjectL?.map((item, i) => {
+                      <td>{valueP}</td>
+                      {valueL?.map((item, i) => {
                         return <td key={i}>{item}</td>;
                       })}
                     </Table.Row>
