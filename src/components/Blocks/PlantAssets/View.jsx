@@ -104,7 +104,7 @@ const View = (props) => {
       }
       setAxiosBusy(false);
     }
-    farmOSlogin.then(myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant`));
+    farmOSlogin.then(myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant?sort=name`));
   }, []);
 
   const renderthis = () => {

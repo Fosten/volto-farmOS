@@ -77,7 +77,7 @@ const Sidebar = (props) => {
       }
       setAxiosBusy(false);
     }
-    farmOSlogin.then(myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/taxonomy_term/plant_type`));
+    farmOSlogin.then(myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/taxonomy_term/plant_type?sort=name`));
   }, []);
 
   const renderthis = () => {
