@@ -46,22 +46,22 @@ const View = (props) => {
 
   useEffect(() => {
     const farmOSlogin = APIlogin();
+    const axiosClient = axios.create({
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
+      },
+    });
+
     async function myResponse(url, combodata) {
       combodata = combodata || {};
       try {
         await APIlogin();
-        await axios
-          .get(url, {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-            },
-          })
-          .then(async (response) => {
-            _.mergeWith(combodata, response.data, customizer);
-            if (typeof response.data.links.next?.href !== 'undefined') {
-              await myResponse(response.data.links.next.href, combodata);
-            }
-          });
+        await axiosClient.get(url).then(async (response) => {
+          _.mergeWith(combodata, response.data, customizer);
+          if (typeof response.data.links.next?.href !== 'undefined') {
+            await myResponse(response.data.links.next.href, combodata);
+          }
+        });
         setState(combodata);
         var arrayL = [];
         var arrayP = [];
@@ -70,11 +70,7 @@ const View = (props) => {
           const origplantID = combodata?.data[count].id;
 
           const locationURL = combodata?.data[count].relationships.location.links.related.href;
-          const response2 = await axios.get(locationURL, {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-            },
-          });
+          const response2 = await axiosClient.get(locationURL);
           var arr = [];
           for (let Lcount = 0; Lcount < 5; Lcount++) {
             var i = response2.data.data[Lcount]?.attributes.name;
@@ -85,11 +81,7 @@ const View = (props) => {
           };
           arrayL.push({ objectLName });
           const planttypeURL = combodata?.data[count].relationships.plant_type.links.related.href;
-          const response3 = await axios.get(planttypeURL, {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-            },
-          });
+          const response3 = await axiosClient.get(planttypeURL);
           const objectPName = {
             [`${origplantID}`]: response3.data.data[0]?.attributes.name,
           };
