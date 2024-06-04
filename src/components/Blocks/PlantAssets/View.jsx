@@ -70,7 +70,7 @@ const View = (props) => {
           const origplantID = combodata?.data[count].id;
 
           const locationURL = combodata?.data[count].relationships.location.links.related.href;
-          const response2 = await axios.get(JSON.parse(`${JSON.stringify(locationURL)}`), {
+          const response2 = await axios.get(locationURL, {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
             },
@@ -85,7 +85,7 @@ const View = (props) => {
           };
           arrayL.push({ objectLName });
           const planttypeURL = combodata?.data[count].relationships.plant_type.links.related.href;
-          const response3 = await axios.get(JSON.parse(`${JSON.stringify(planttypeURL)}`), {
+          const response3 = await axios.get(planttypeURL, {
             headers: {
               Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
             },
