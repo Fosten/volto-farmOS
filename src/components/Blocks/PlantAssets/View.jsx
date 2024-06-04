@@ -63,32 +63,47 @@ const View = (props) => {
           }
         });
         setState(combodata);
-        var arrayL = [];
-        var arrayP = [];
+        var arrI = [];
+        var arrP = [];
+        var arrL = [];
 
         for (let count = 0; count < combodata.data.length; count++) {
-          const origplantID = combodata?.data[count].id;
+          const origplantIDpicker = combodata?.data[count].id;
+          const planttypeURLpicker = combodata?.data[count].relationships.plant_type.links.related.href;
+          const locationURLpicker = combodata?.data[count].relationships.location.links.related.href;
+          arrI.push(origplantIDpicker);
+          arrP.push(planttypeURLpicker);
+          arrL.push(locationURLpicker);
+        }
 
-          const locationURL = combodata?.data[count].relationships.location.links.related.href;
-          const response2 = await axiosClient.get(locationURL);
+        var arrayP = [];
+        var arrayL = [];
+
+        for (let count = 0; count < combodata.data.length; count++) {
+          const origplantID = arrI[count];
+
+          const planttypeURL = arrP[count];
+          const responseP = await axiosClient.get(planttypeURL);
+          const objectPName = {
+            [`${origplantID}`]: responseP.data.data[0]?.attributes.name,
+          };
+          arrayP.push({ objectPName });
+
+          const locationURL = arrL[count];
+          const responseL = await axiosClient.get(locationURL);
           var arr = [];
           for (let Lcount = 0; Lcount < 5; Lcount++) {
-            var i = response2.data.data[Lcount]?.attributes.name;
+            var i = responseL.data.data[Lcount]?.attributes.name;
             arr.push(i);
           }
           const objectLName = {
             [`${origplantID}`]: arr,
           };
           arrayL.push({ objectLName });
-          const planttypeURL = combodata?.data[count].relationships.plant_type.links.related.href;
-          const response3 = await axiosClient.get(planttypeURL);
-          const objectPName = {
-            [`${origplantID}`]: response3.data.data[0]?.attributes.name,
-          };
-          arrayP.push({ objectPName });
+
         }
-        setState3(arrayL);
         setState2(arrayP);
+        setState3(arrayL);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err);
