@@ -83,24 +83,24 @@ const View = (props) => {
           const origplantID = arrI[count];
 
           const planttypeURL = arrP[count];
-          const responseP = await axiosClient.get(planttypeURL);
-          const objectPName = {
-            [`${origplantID}`]: responseP.data.data[0]?.attributes.name,
-          };
-          arrayP.push({ objectPName });
-
+          await axiosClient.get(planttypeURL).then(async (responseP) => {
+            const objectPName = {
+              [`${origplantID}`]: responseP.data.data[0]?.attributes.name,
+            };
+            arrayP.push({ objectPName });
+          });
           const locationURL = arrL[count];
-          const responseL = await axiosClient.get(locationURL);
-          var arr = [];
-          for (let Lcount = 0; Lcount < 5; Lcount++) {
-            var i = responseL.data.data[Lcount]?.attributes.name;
-            arr.push(i);
-          }
-          const objectLName = {
-            [`${origplantID}`]: arr,
-          };
-          arrayL.push({ objectLName });
-
+          await axiosClient.get(locationURL).then(async (responseL) => {
+            var arr = [];
+            for (let Lcount = 0; Lcount < 5; Lcount++) {
+              var i = responseL.data.data[Lcount]?.attributes.name;
+              arr.push(i);
+            }
+            const objectLName = {
+              [`${origplantID}`]: arr,
+            };
+            arrayL.push({ objectLName });
+          });
         }
         setState2(arrayP);
         setState3(arrayL);
