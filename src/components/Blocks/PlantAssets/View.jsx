@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'semantic-ui-react';
-import axios from 'axios';
 import farmOS from '@farmOS/farmOS.js';
 import _ from 'lodash';
 
@@ -22,7 +21,13 @@ const View = (props) => {
   const [arrayL, setState3] = useState({});
   const [isAxiosBusy, setAxiosBusy] = useState(true);
 
-  const APIlogin = () => {
+  function customizer(objValue, srcValue) {
+    if (_.isArray(objValue)) {
+      return objValue.concat(srcValue);
+    }
+  }
+
+  useEffect(() => {
     const remoteConfig = {
       host: window.env.RAZZLE_FARMOS_API_HOST,
       clientId: window.env.RAZZLE_FARMOS_API_CLIENT_ID,
@@ -33,30 +38,19 @@ const View = (props) => {
     };
     const options = { remote: remoteConfig };
     const farm = farmOS(options);
-    const username = window.env.RAZZLE_FARMOS_API_USERNAME;
-    const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
-    return farm.remote.authorize(username, password);
-  };
 
-  function customizer(objValue, srcValue) {
-    if (_.isArray(objValue)) {
-      return objValue.concat(srcValue);
-    }
-  }
-
-  useEffect(() => {
+    const APIlogin = () => {
+      const username = window.env.RAZZLE_FARMOS_API_USERNAME;
+      const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
+      return farm.remote.authorize(username, password);
+    };
     const farmOSlogin = APIlogin();
-    const axiosClient = axios.create({
-      headers: {
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))['access_token']}`,
-      },
-    });
 
     async function myResponse(url, combodata) {
       combodata = combodata || {};
       try {
-        await APIlogin();
-        await axiosClient.get(url).then(async (response) => {
+        await farmOSlogin;
+        await farm.remote.request(url).then(async (response) => {
           _.mergeWith(combodata, response.data, customizer);
           if (typeof response.data.links.next?.href !== 'undefined') {
             await myResponse(response.data.links.next.href, combodata);
@@ -83,14 +77,14 @@ const View = (props) => {
           const origplantID = arrI[count];
 
           const planttypeURL = arrP[count];
-          await axiosClient.get(planttypeURL).then(async (responseP) => {
+          await farm.remote.request(planttypeURL).then(async (responseP) => {
             const objectPName = {
               [`${origplantID}`]: responseP.data.data[0]?.attributes.name,
             };
             arrayP.push({ objectPName });
           });
           const locationURL = arrL[count];
-          await axiosClient.get(locationURL).then(async (responseL) => {
+          await farm.remote.request(locationURL).then(async (responseL) => {
             var arr = [];
             for (let Lcount = 0; Lcount < 5; Lcount++) {
               var i = responseL.data.data[Lcount]?.attributes.name;
@@ -111,7 +105,7 @@ const View = (props) => {
       }
       setAxiosBusy(false);
     }
-    farmOSlogin.then(myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant?sort=name`));
+    myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant?sort=name`);
   }, []);
 
   const renderthis = () => {
