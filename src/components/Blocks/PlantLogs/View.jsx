@@ -17,7 +17,7 @@ import _ from 'lodash';
 
 const View = (props) => {
   const { data } = props;
-  const [checker, setState] = useState({});
+  const [propertyValues, setState] = useState({});
   const [hasFilter, setFilter] = useState(true);
   const [isAxiosBusy, setAxiosBusy] = useState(true);
   function customizer(objValue, srcValue) {
@@ -66,14 +66,14 @@ const View = (props) => {
     var newarray = [];
 
     async function myResponse2(combodata) {
-      if ((typeof data?.log_type_selector == 'undefined') && (typeof data?.plant_type_selector == 'undefined')) {
-        setFilter(false)}
-        else {
+      if (typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') {
+        setFilter(false);
+      } else {
         combodata = combodata || {};
         var newlyarray = [];
         try {
           if (newarray.length === 0) {
-            var filter = typeof data?.log_type_selector !== 'undefined' ? { type: data?.log_type_selector } : { type: 'log--activity' };
+            var filter = typeof data?.log_type_selector !== 'undefined' ? { type: data?.log_type_selector, 'asset.plant_type.id': data?.plant_type_selector } : { 'asset.plant_type.id': data?.plant_type_selector };
             await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
               response.data.map(async (ik) => {
                 var activityid = ik.id;
@@ -102,7 +102,7 @@ const View = (props) => {
                   relationships: { plant_type: [{ id: null }] },
                 };
               }
-              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteAsset?.relationships];
+              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name];
               newlyarray.push(objectPName);
             });
             var okthen = { newlyarray };
@@ -117,8 +117,7 @@ const View = (props) => {
               myResponse2(combodata);
             } else {
               var propertyValues = Object.values(combodata);
-              var checker = data?.plant_type_selector ? propertyValues[0].filter((plant) => plant[5].plant_type[0].id?.includes(data?.plant_type_selector)) : propertyValues[0];
-              setState(checker);
+              setState(propertyValues);
               setAxiosBusy(false);
             }
           });
@@ -159,8 +158,8 @@ const View = (props) => {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {checker.length > 0 ? (
-                  checker.map((item, i) => {
+                {propertyValues[0].length > 0 ? (
+                  propertyValues[0].map((item, i) => {
                     return (
                       <Table.Row key={i}>
                         <td>{item[0]}</td>
