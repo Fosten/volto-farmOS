@@ -111,7 +111,7 @@ const Sidebar = (props) => {
     ) : (
       <Segment.Group raised>
         <header className="header pulled">
-          <h2>Select log type</h2>
+          <h2>Select filters</h2>
         </header>
         <SelectWidget
           id="log_type_selector"
@@ -126,15 +126,28 @@ const Sidebar = (props) => {
             });
           }}
         />
-        <header className="header pulled">
-          <h2>Select plant type</h2>
-        </header>
         <SelectWidget
           id="plant_type_selector"
           title="Plant Types"
           required={false}
           value={data.plant_type_selector ?? ''}
           choices={newarray}
+          onChange={(name, value) => {
+            onChangeBlock(block, {
+              ...data,
+              [name]: value,
+            });
+          }}
+        />
+        <SelectWidget
+          id="status_selector"
+          title="Status"
+          required={false}
+          value={data.status_selector ?? ''}
+          choices={[
+            ['done', 'Done'],
+            ['pending', 'Pending'],
+          ]}
           onChange={(name, value) => {
             onChangeBlock(block, {
               ...data,

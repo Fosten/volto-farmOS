@@ -73,7 +73,7 @@ const View = (props) => {
         var newlyarray = [];
         try {
           if (newarray.length === 0) {
-            var filter = { type: data?.log_type_selector, 'asset.plant_type.id': data?.plant_type_selector };
+            var filter = { type: data?.log_type_selector, 'asset.plant_type.id': data?.plant_type_selector, status: data?.status_selector };
             await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
               response.data.map(async (ik) => {
                 var activityid = ik.id;
@@ -198,10 +198,7 @@ const View = (props) => {
 
 View.propTypes = {
   properties: PropTypes.objectOf(PropTypes.any),
-  data: PropTypes.shape({
-    plant_type_selector: PropTypes.string,
-    log_type_selector: PropTypes.string,
-  }),
+  data: PropTypes.objectOf(PropTypes.any),
 };
 
 export default View;
