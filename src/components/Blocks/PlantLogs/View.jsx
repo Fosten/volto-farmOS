@@ -66,14 +66,14 @@ const View = (props) => {
     var newarray = [];
 
     async function myResponse2(combodata) {
-      if (typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') {
+      if ((typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') || (data?.log_type_selector === '' && data.plant_type_selector === '')) {
         setFilter(false);
       } else {
         combodata = combodata || {};
         var newlyarray = [];
         try {
           if (newarray.length === 0) {
-            var filter = typeof data?.log_type_selector !== 'undefined' ? { type: data?.log_type_selector, 'asset.plant_type.id': data?.plant_type_selector } : { 'asset.plant_type.id': data?.plant_type_selector };
+            var filter = { type: data?.log_type_selector, 'asset.plant_type.id': data?.plant_type_selector };
             await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
               response.data.map(async (ik) => {
                 var activityid = ik.id;

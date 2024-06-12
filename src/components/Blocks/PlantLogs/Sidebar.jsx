@@ -93,30 +93,32 @@ const Sidebar = (props) => {
     myResponse();
   }, []);
 
+  const logchoices = [
+    ['log--activity', 'log--activity'],
+    ['log--harvest', 'log--harvest'],
+    ['log--input', 'log--input'],
+    ['log--maintenance', 'log--maintenance'],
+    ['log--observation', 'log--observation'],
+    ['log--purchase', 'log--purchase'],
+    ['log--sale', 'log--sale'],
+    ['log--seeding', 'log--seeding'],
+    ['log--transplanting', 'log--transplanting'],
+  ];
+
   const renderthis = () => {
     return isAxiosBusy ? (
       <div className="App">Loading...</div>
     ) : (
       <Segment.Group raised>
         <header className="header pulled">
-          <h2>Select plant type</h2>
+          <h2>Select log type</h2>
         </header>
         <SelectWidget
           id="log_type_selector"
           title="Log Types"
           required={false}
-          value={data.log_type_selector ?? false}
-          choices={[
-            ['log--activity', 'log--activity'],
-            ['log--harvest', 'log--harvest'],
-            ['log--input', 'log--input'],
-            ['log--maintenance', 'log--maintenance'],
-            ['log--observation', 'log--observation'],
-            ['log--purchase', 'log--purchase'],
-            ['log--sale', 'log--sale'],
-            ['log--seeding', 'log--seeding'],
-            ['log--transplanting', 'log--transplanting'],
-          ]}
+          value={data.log_type_selector ?? ''}
+          choices={logchoices}
           onChange={(name, value) => {
             onChangeBlock(block, {
               ...data,
@@ -124,11 +126,14 @@ const Sidebar = (props) => {
             });
           }}
         />
+        <header className="header pulled">
+          <h2>Select plant type</h2>
+        </header>
         <SelectWidget
           id="plant_type_selector"
           title="Plant Types"
           required={false}
-          value={data.plant_type_selector ?? false}
+          value={data.plant_type_selector ?? ''}
           choices={newarray}
           onChange={(name, value) => {
             onChangeBlock(block, {
