@@ -16,11 +16,8 @@ import _ from 'lodash';
  */
 
 const View = (props) => {
-  const [combodata, setState] = useState({});
-  const [arrayP, setState2] = useState({});
-  const [arrayL, setState3] = useState({});
+  const [propertyValues, setStateNew] = useState({});
   const [isAxiosBusy, setAxiosBusy] = useState(true);
-
   function customizer(objValue, srcValue) {
     if (_.isArray(objValue)) {
       return objValue.concat(srcValue);
@@ -39,73 +36,92 @@ const View = (props) => {
     const options = { remote: remoteConfig };
     const farm = farmOS(options);
 
-    const APIlogin = () => {
-      const username = window.env.RAZZLE_FARMOS_API_USERNAME;
-      const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
-      return farm.remote.authorize(username, password);
-    };
-    const farmOSlogin = APIlogin();
+    async function LoginSchema() {
+      const APIlogin = () => {
+        const username = window.env.RAZZLE_FARMOS_API_USERNAME;
+        const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
+        return farm.remote.authorize(username, password);
+      };
+      async function setFarmSchema() {
+        // Try the session storage first...
+        let schema = JSON.parse(localStorage.getItem('schema'));
+        if (schema == null) {
+          // Not in session storage, so fetch schema from the farmOS host.
+          await farm.schema.fetch();
+          schema = farm.schema.get();
+          // Cache in the session storage for next time.
+          localStorage.setItem('schema', JSON.stringify(schema));
+        } else {
+          await farm.schema.set(schema);
+        }
+      }
+      await APIlogin();
+      setFarmSchema();
+    }
 
-    async function myResponse(url, combodata) {
+    let y = 0;
+    let n = 20;
+    var newarray = [];
+
+    async function myResponse2(combodata) {
       combodata = combodata || {};
+      var newlyarray = [];
       try {
-        await farmOSlogin;
-        await farm.remote.request(url).then(async (response) => {
-          _.mergeWith(combodata, response.data, customizer);
-          if (typeof response.data.links.next?.href !== 'undefined') {
-            await myResponse(response.data.links.next.href, combodata);
+        if (newarray.length === 0) {
+          const filter = { type: 'asset--plant' };
+          await farm.asset.fetch({ filter, limit: Infinity }).then(async (response) => {
+            response.data.map(async (ik) => {
+              var activityid = ik.id;
+              newarray.push(activityid);
+            });
+          });
+        }
+        let slicedArray = newarray.slice(y, n);
+        const requests = slicedArray.map(async (idok) => {
+          const filter = { type: 'asset--plant', id: idok };
+          const include = ['plant_type', 'location'];
+          return farm.asset.fetch({ filter, include, limit: 1 });
+        });
+
+        Promise.all(requests).then((responses) => {
+          responses.forEach(async (respP) => {
+            var {
+              data: [remoteAsset, remotePlantType, remoteLocation],
+            } = respP;
+            if (typeof remoteLocation == 'undefined') {
+              remoteLocation = { attributes: { name: null } };
+            }
+            const objectPName = [remoteAsset.attributes.name, remoteAsset.attributes.status, remotePlantType?.attributes.name, remoteLocation?.attributes.name];
+            newlyarray.push(objectPName);
+          });
+          var okthen = { newlyarray };
+          if (n <= newarray.length) {
+            y = n;
+            n = n + 20;
+          }
+          if (newlyarray.length <= 20) {
+            _.mergeWith(combodata, okthen, customizer);
+          }
+          if (newlyarray.length === 20) {
+            myResponse2(combodata);
+          } else {
+            var propertyValues = Object.values(combodata);
+            setStateNew(propertyValues);
+            setAxiosBusy(false);
           }
         });
-        setState(combodata);
-        var arrI = [];
-        var arrP = [];
-        var arrL = [];
-
-        for (let count = 0; count < combodata.data.length; count++) {
-          const origplantIDpicker = combodata?.data[count].id;
-          const planttypeURLpicker = combodata?.data[count].relationships.plant_type.links.related.href;
-          const locationURLpicker = combodata?.data[count].relationships.location.links.related.href;
-          arrI.push(origplantIDpicker);
-          arrP.push(planttypeURLpicker);
-          arrL.push(locationURLpicker);
-        }
-
-        var arrayP = [];
-        var arrayL = [];
-
-        for (let count = 0; count < combodata.data.length; count++) {
-          const origplantID = arrI[count];
-
-          const planttypeURL = arrP[count];
-          await farm.remote.request(planttypeURL).then(async (responseP) => {
-            const objectPName = {
-              [`${origplantID}`]: responseP.data.data[0]?.attributes.name,
-            };
-            arrayP.push({ objectPName });
-          });
-          const locationURL = arrL[count];
-          await farm.remote.request(locationURL).then(async (responseL) => {
-            var arr = [];
-            for (let Lcount = 0; Lcount < 5; Lcount++) {
-              var i = responseL.data.data[Lcount]?.attributes.name;
-              arr.push(i);
-            }
-            const objectLName = {
-              [`${origplantID}`]: arr,
-            };
-            arrayL.push({ objectLName });
-          });
-        }
-        setState2(arrayP);
-        setState3(arrayL);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err);
         setAxiosBusy(true);
       }
-      setAxiosBusy(false);
     }
-    myResponse(`${window.env.RAZZLE_FARMOS_API_HOST}/api/asset/plant?sort=name`);
+
+    async function myResponse() {
+      await LoginSchema(farm);
+      myResponse2();
+    }
+    myResponse();
   }, []);
 
   const renderthis = () => {
@@ -129,30 +145,13 @@ const View = (props) => {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {combodata?.data.map((item, i) => {
-                const matchingplantID = item.id;
-                for (let p of arrayP) {
-                  for (const z of Object.values(p)) {
-                    for (const y of Object.keys(z)) {
-                      if (y === matchingplantID) var valueP = Object.values(z);
-                    }
-                  }
-                }
-                for (let p of arrayL) {
-                  for (const z of Object.values(p)) {
-                    for (const y of Object.keys(z)) {
-                      if (y === matchingplantID) var valueL = Object.values(z)[0];
-                    }
-                  }
-                }
+              {propertyValues[0]?.map((item, i) => {
                 return (
                   <Table.Row key={i}>
-                    <td>{item.attributes.name}</td>
-                    <td>{item.attributes.status}</td>
-                    <td>{valueP}</td>
-                    {valueL?.map((item, i) => {
-                      return <td key={i}>{item}</td>;
-                    })}
+                    <td>{item[0]}</td>
+                    <td>{item[1]}</td>
+                    <td>{item[2]}</td>
+                    <td>{item[3]}</td>
                   </Table.Row>
                 );
               })}
