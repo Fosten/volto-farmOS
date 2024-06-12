@@ -18,6 +18,7 @@ import _ from 'lodash';
 const View = (props) => {
   const { data } = props;
   const [checker, setState] = useState({});
+  const [hasFilter, setFilter] = useState(true);
   const [isAxiosBusy, setAxiosBusy] = useState(true);
   function customizer(objValue, srcValue) {
     if (_.isArray(objValue)) {
@@ -65,66 +66,69 @@ const View = (props) => {
     var newarray = [];
 
     async function myResponse2(combodata) {
-      combodata = combodata || {};
-      var newlyarray = [];
-      try {
-        if (newarray.length === 0) {
-          var filter = typeof data?.log_type_selector !== 'undefined' ? { type: data?.log_type_selector } : { type: 'log--activity' };
-          await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
-            response.data.map(async (ik) => {
-              var activityid = ik.id;
-              newarray.push(activityid);
+      if ((typeof data?.log_type_selector == 'undefined') && (typeof data?.plant_type_selector == 'undefined')) {
+        setFilter(false)}
+        else {
+        combodata = combodata || {};
+        var newlyarray = [];
+        try {
+          if (newarray.length === 0) {
+            var filter = typeof data?.log_type_selector !== 'undefined' ? { type: data?.log_type_selector } : { type: 'log--activity' };
+            await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
+              response.data.map(async (ik) => {
+                var activityid = ik.id;
+                newarray.push(activityid);
+              });
             });
+          }
+          let slicedArray = newarray.slice(y, n);
+          const requests = slicedArray.map(async (idok) => {
+            const filter = { type: data?.log_type_selector, id: idok };
+            const include = ['asset', 'location'];
+            return farm.log.fetch({ filter, include, limit: 1 });
           });
-        }
-        let slicedArray = newarray.slice(y, n);
-        const requests = slicedArray.map(async (idok) => {
-          const filter = { type: data?.log_type_selector, id: idok };
-          const include = ['asset', 'location'];
-          return farm.log.fetch({ filter, include, limit: 1 });
-        });
 
-        Promise.all(requests).then((responses) => {
-          responses.forEach(async (respP) => {
-            var {
-              data: [remoteLog, remoteAsset, remoteLocation],
-            } = respP;
-            if (typeof remoteLocation == 'undefined') {
-              remoteLocation = { attributes: { name: null } };
+          Promise.all(requests).then((responses) => {
+            responses.forEach(async (respP) => {
+              var {
+                data: [remoteLog, remoteAsset, remoteLocation],
+              } = respP;
+              if (typeof remoteLocation == 'undefined') {
+                remoteLocation = { attributes: { name: null } };
+              }
+              if (typeof remoteAsset == 'undefined' || typeof remoteAsset.relationships.plant_type == 'undefined') {
+                remoteAsset = {
+                  attributes: { name: null },
+                  relationships: { plant_type: [{ id: null }] },
+                };
+              }
+              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteAsset?.relationships];
+              newlyarray.push(objectPName);
+            });
+            var okthen = { newlyarray };
+            if (n <= newarray.length) {
+              y = n;
+              n = n + 20;
             }
-            if (typeof remoteAsset == 'undefined' || typeof remoteAsset.relationships.plant_type == 'undefined') {
-              remoteAsset = {
-                attributes: { name: null },
-                relationships: { plant_type: [{ id: null }] },
-              };
+            if (newlyarray.length <= 20) {
+              _.mergeWith(combodata, okthen, customizer);
             }
-            const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteAsset?.relationships];
-            newlyarray.push(objectPName);
+            if (newlyarray.length === 20) {
+              myResponse2(combodata);
+            } else {
+              var propertyValues = Object.values(combodata);
+              var checker = data?.plant_type_selector ? propertyValues[0].filter((plant) => plant[5].plant_type[0].id?.includes(data?.plant_type_selector)) : propertyValues[0];
+              setState(checker);
+              setAxiosBusy(false);
+            }
           });
-          var okthen = { newlyarray };
-          if (n <= newarray.length) {
-            y = n;
-            n = n + 20;
-          }
-          if (newlyarray.length <= 20) {
-            _.mergeWith(combodata, okthen, customizer);
-          }
-          if (newlyarray.length === 20) {
-            myResponse2(combodata);
-          } else {
-            var propertyValues = Object.values(combodata);
-            var checker = data?.plant_type_selector ? propertyValues[0].filter((plant) => plant[5].plant_type[0].id?.includes(data?.plant_type_selector)) : propertyValues[0];
-            setState(checker);
-            setAxiosBusy(false);
-          }
-        });
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log(err);
-        setAxiosBusy(true);
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.log(err);
+          setAxiosBusy(true);
+        }
       }
     }
-
     async function myResponse() {
       await LoginSchema(farm);
       myResponse2();
@@ -133,50 +137,54 @@ const View = (props) => {
   }, [data]);
 
   const renderthis = () => {
-    return isAxiosBusy ? (
-      <div className="App">Loading...</div>
-    ) : (
-      <div className="container">
-        <h2>Plant Logs</h2>
-        <div className="plantlogs">
-          <Table celled>
-            <Table.Header>
-              <Table.Row>
-                <th>Name</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Asset</th>
-                <th>Location 1</th>
-                <th>Location 2</th>
-                <th>Location 3</th>
-                <th>Location 4</th>
-                <th>Location 5</th>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {checker.length > 0 ? (
-                checker.map((item, i) => {
-                  return (
-                    <Table.Row key={i}>
-                      <td>{item[0]}</td>
-                      <td>{item[1].substring(0, 10)}</td>
-                      <td>{item[2]}</td>
-                      <td>{item[3]}</td>
-                      <td>{item[4]}</td>
-                    </Table.Row>
-                  );
-                })
-              ) : (
+    return hasFilter ? (
+      isAxiosBusy ? (
+        <div className="App">Loading...</div>
+      ) : (
+        <div className="container">
+          <h2>Plant Logs</h2>
+          <div className="plantlogs">
+            <Table celled>
+              <Table.Header>
                 <Table.Row>
-                  <td>
-                    <strong>No results found</strong>
-                  </td>
+                  <th>Name</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Asset</th>
+                  <th>Location 1</th>
+                  <th>Location 2</th>
+                  <th>Location 3</th>
+                  <th>Location 4</th>
+                  <th>Location 5</th>
                 </Table.Row>
-              )}
-            </Table.Body>
-          </Table>
+              </Table.Header>
+              <Table.Body>
+                {checker.length > 0 ? (
+                  checker.map((item, i) => {
+                    return (
+                      <Table.Row key={i}>
+                        <td>{item[0]}</td>
+                        <td>{item[1].substring(0, 10)}</td>
+                        <td>{item[2]}</td>
+                        <td>{item[3]}</td>
+                        <td>{item[4]}</td>
+                      </Table.Row>
+                    );
+                  })
+                ) : (
+                  <Table.Row>
+                    <td>
+                      <strong>No results found</strong>
+                    </td>
+                  </Table.Row>
+                )}
+              </Table.Body>
+            </Table>
+          </div>
         </div>
-      </div>
+      )
+    ) : (
+      <div className="App">No Filter is set. Too many results. Please set at least one filter...</div>
     );
   };
   var yoyo = renderthis();
