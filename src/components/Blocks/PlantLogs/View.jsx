@@ -117,6 +117,15 @@ const View = (props) => {
               myResponse2(combodata);
             } else {
               var propertyValues = Object.values(combodata);
+              if (data?.sort_selector === 'asc') {
+                propertyValues[0].sort(function (a, b) {
+                  return a[1] > b[1];
+                });
+              } else if (data?.sort_selector === 'desc') {
+                propertyValues[0].sort(function (a, b) {
+                  return a[1] < b[1];
+                });
+              }
               setState(propertyValues);
               setAxiosBusy(false);
             }

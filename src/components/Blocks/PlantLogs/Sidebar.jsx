@@ -155,6 +155,22 @@ const Sidebar = (props) => {
             });
           }}
         />
+        <SelectWidget
+          id="sort_selector"
+          title="Sort"
+          required={false}
+          value={data.sort_selector ?? ''}
+          choices={[
+            ['asc', 'Ascending'],
+            ['desc', 'Descending'],
+          ]}
+          onChange={(name, value) => {
+            onChangeBlock(block, {
+              ...data,
+              [name]: value,
+            });
+          }}
+        />
       </Segment.Group>
     );
   };
