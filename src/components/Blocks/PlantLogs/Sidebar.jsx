@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from 'semantic-ui-react';
 import { injectIntl } from 'react-intl';
-import { SelectWidget } from '@plone/volto/components';
+import { SelectWidget, DatetimeWidget } from '@plone/volto/components';
 import farmOS from '@farmOS/farmOS.js';
 import _ from 'lodash';
 
@@ -155,6 +155,33 @@ const Sidebar = (props) => {
             });
           }}
         />
+        <DatetimeWidget
+          id="start_date_selector"
+          title="Start Date"
+          required={false}
+          value={data.start_date_selector ?? ''}
+          onChange={(name, value) => {
+            onChangeBlock(block, {
+              ...data,
+              [name]: value,
+            });
+          }}
+        />
+        <DatetimeWidget
+          id="end_date_selector"
+          title="End Date"
+          required={false}
+          value={data.end_date_selector ?? ''}
+          onChange={(name, value) => {
+            onChangeBlock(block, {
+              ...data,
+              [name]: value,
+            });
+          }}
+        />
+        <header className="header pulled">
+          <h2>Select sort</h2>
+        </header>
         <SelectWidget
           id="sort_selector"
           title="Sort"

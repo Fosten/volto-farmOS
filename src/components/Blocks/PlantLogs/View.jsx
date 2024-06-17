@@ -71,9 +71,18 @@ const View = (props) => {
       } else {
         combodata = combodata || {};
         var newlyarray = [];
+        var enddate = data.end_date_selector || '2038-01-01T00:00:00.000Z';
         try {
           if (newarray.length === 0) {
-            var filter = { type: data?.log_type_selector, 'asset.plant_type.id': data?.plant_type_selector, status: data?.status_selector };
+            var timestamp_start_date = 'timestamp';
+            var timestamp_end_date = 'timestamp';
+            var filter = {
+              type: data?.log_type_selector,
+              'asset.plant_type.id': data?.plant_type_selector,
+              [timestamp_start_date]: { $gte: data?.start_date_selector },
+              [timestamp_end_date]: { $lte: enddate },
+              status: data?.status_selector,
+            };
             await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
               response.data.map(async (ik) => {
                 var activityid = ik.id;
@@ -102,7 +111,7 @@ const View = (props) => {
                   relationships: { plant_type: [{ id: null }] },
                 };
               }
-              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name];
+              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteLog?.attributes.timestamp];
               newlyarray.push(objectPName);
             });
             var okthen = { newlyarray };
