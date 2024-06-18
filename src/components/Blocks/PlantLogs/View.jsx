@@ -71,13 +71,14 @@ const View = (props) => {
       } else {
         combodata = combodata || {};
         var newlyarray = [];
+        var startdate = data.start_date_selector || '2016-01-01T00:00:00.000Z';
         var enddate = data.end_date_selector || '2038-01-01T00:00:00.000Z';
         try {
           if (newarray.length === 0) {
             var filter = {
               type: data?.log_type_selector,
               'asset.plant_type.id': data?.plant_type_selector,
-              timestamp: { $gte: data?.start_date_selector, $lte: enddate},
+              timestamp: { $gte: startdate, $lte: enddate },
               status: data?.status_selector,
             };
             await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
