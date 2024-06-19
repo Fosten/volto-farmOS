@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'semantic-ui-react';
-import _ from 'lodash';
-import { customizer } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/customizer';
-import { loginSchema } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/loginSchema';
+import WholeDataResponse from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/data';
 
 /**
  * View description block.
@@ -17,152 +15,59 @@ import { loginSchema } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/lo
  */
 
 const View = (props) => {
-  const { data } = props;
-  const [propertyValues, setState] = useState({});
-  const [hasFilter, setFilter] = useState(true);
-  const [isAxiosBusy, setAxiosBusy] = useState(true);
-
-  useEffect(() => {
-    let y = 0;
-    let n = 20;
-    var newarray = [];
-
-    async function myResponse2(combodata) {
-      var farm = await loginSchema();
-      if ((typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') || (data?.log_type_selector === '' && data.plant_type_selector === '')) {
-        setFilter(false);
-      } else {
-        combodata = combodata || {};
-        var newlyarray = [];
-        var startdate = data.start_date_selector || '2016-01-01T00:00:00.000Z';
-        var enddate = data.end_date_selector || '2038-01-01T00:00:00.000Z';
-        try {
-          if (newarray.length === 0) {
-            var filter = {
-              type: data?.log_type_selector,
-              'asset.plant_type.id': data?.plant_type_selector,
-              timestamp: { $gte: startdate, $lte: enddate },
-              status: data?.status_selector,
-            };
-            await farm.log.fetch({ filter, limit: Infinity }).then(async (response) => {
-              response.data.map(async (ik) => {
-                var activityid = ik.id;
-                newarray.push(activityid);
-              });
-            });
-          }
-          let slicedArray = newarray.slice(y, n);
-          const requests = slicedArray.map(async (idok) => {
-            const filter = { type: data?.log_type_selector, id: idok };
-            const include = ['asset', 'location'];
-            return farm.log.fetch({ filter, include, limit: 1 });
-          });
-
-          Promise.all(requests).then((responses) => {
-            responses.forEach(async (respP) => {
-              var {
-                data: [remoteLog, remoteAsset, remoteLocation],
-              } = respP;
-              if (typeof remoteLocation == 'undefined') {
-                remoteLocation = { attributes: { name: null } };
-              }
-              if (typeof remoteAsset == 'undefined' || typeof remoteAsset.relationships.plant_type == 'undefined') {
-                remoteAsset = {
-                  attributes: { name: null },
-                  relationships: { plant_type: [{ id: null }] },
-                };
-              }
-              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteLog?.attributes.timestamp];
-              newlyarray.push(objectPName);
-            });
-            var okthen = { newlyarray };
-            if (n <= newarray.length) {
-              y = n;
-              n = n + 20;
-            }
-            if (newlyarray.length <= 20) {
-              _.mergeWith(combodata, okthen, customizer);
-            }
-            if (newlyarray.length === 20) {
-              myResponse2(combodata);
-            } else {
-              var propertyValues = Object.values(combodata);
-              if (data?.sort_selector === 'asc') {
-                propertyValues[0].sort(function (a, b) {
-                  return a[1] > b[1];
-                });
-              } else if (data?.sort_selector === 'desc') {
-                propertyValues[0].sort(function (a, b) {
-                  return a[1] < b[1];
-                });
-              }
-              setState(propertyValues);
-              setAxiosBusy(false);
-            }
-          });
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          console.log(err);
-          setAxiosBusy(true);
-        }
-      }
-    }
-    myResponse2();
-  }, [data]);
-
-  const renderthis = () => {
-    return hasFilter ? (
-      isAxiosBusy ? (
-        <div className="App">Loading...</div>
-      ) : (
-        <div className="container">
-          <h2>Plant Logs</h2>
-          <div className="plantlogs">
-            <Table celled>
-              <Table.Header>
-                <Table.Row>
-                  <th>Name</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Asset</th>
-                  <th>Location 1</th>
-                  <th>Location 2</th>
-                  <th>Location 3</th>
-                  <th>Location 4</th>
-                  <th>Location 5</th>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {propertyValues[0].length > 0 ? (
-                  propertyValues[0].map((item, i) => {
-                    return (
-                      <Table.Row key={i}>
-                        <td>{item[0]}</td>
-                        <td>{item[1].substring(0, 10)}</td>
-                        <td>{item[2]}</td>
-                        <td>{item[3]}</td>
-                        <td>{item[4]}</td>
-                      </Table.Row>
-                    );
-                  })
-                ) : (
-                  <Table.Row>
-                    <td>
-                      <strong>No results found</strong>
-                    </td>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </Table>
-          </div>
-        </div>
-      )
+  const value = WholeDataResponse(props);
+  var propertyValues = value[0];
+  var hasFilter = value[1];
+  var isAxiosBusy = value[2];
+  return hasFilter ? (
+    isAxiosBusy ? (
+      <div className="App">Loading...</div>
     ) : (
-      <div className="App">No Filter is set. Too many results. Please set at least one filter...</div>
-    );
-  };
-  var yoyo = renderthis();
-  return yoyo;
+      <div className="container">
+        <h2>Plant Logs</h2>
+        <div className="plantlogs">
+          <Table celled>
+            <Table.Header>
+              <Table.Row>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Asset</th>
+                <th>Location 1</th>
+                <th>Location 2</th>
+                <th>Location 3</th>
+                <th>Location 4</th>
+                <th>Location 5</th>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {propertyValues[0].length > 0 ? (
+                propertyValues[0].map((item, i) => {
+                  return (
+                    <Table.Row key={i}>
+                      <td>{item[0]}</td>
+                      <td>{item[1].substring(0, 10)}</td>
+                      <td>{item[2]}</td>
+                      <td>{item[3]}</td>
+                      <td>{item[4]}</td>
+                    </Table.Row>
+                  );
+                })
+              ) : (
+                <Table.Row>
+                  <td>
+                    <strong>No results found</strong>
+                  </td>
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table>
+        </div>
+      </div>
+    )
+  ) : (
+    <div className="App">No Filter is set. Too many results. Please set at least one filter...</div>
+  );
 };
 
 /**
