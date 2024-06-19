@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import farmOS from '@farmOS/farmOS.js';
 
-export async function loginSchema(props) {
+export async function loginSchema() {
   const remoteConfig = {
     host: window.env.RAZZLE_FARMOS_API_HOST,
     clientId: window.env.RAZZLE_FARMOS_API_CLIENT_ID,
