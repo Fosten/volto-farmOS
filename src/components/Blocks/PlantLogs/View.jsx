@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Table } from 'semantic-ui-react';
 import _ from 'lodash';
 import { customizer } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/customizer';
-import { farm, loginSchema } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/loginSchema';
+import { loginSchema } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/loginSchema';
 
 /**
  * View description block.
@@ -28,6 +28,7 @@ const View = (props) => {
     var newarray = [];
 
     async function myResponse2(combodata) {
+      var farm = await loginSchema();
       if ((typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') || (data?.log_type_selector === '' && data.plant_type_selector === '')) {
         setFilter(false);
       } else {
@@ -106,11 +107,7 @@ const View = (props) => {
         }
       }
     }
-    async function myResponse() {
-      await loginSchema();
-      myResponse2();
-    }
-    myResponse();
+    myResponse2();
   }, [data]);
 
   const renderthis = () => {
