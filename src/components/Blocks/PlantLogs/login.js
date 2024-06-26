@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
 import farmOS from '@farmOS/farmOS.js';
 
-export async function loginSchema() {
+export default async function login() {
   const remoteConfig = {
     host: window.env.RAZZLE_FARMOS_API_HOST,
     clientId: window.env.RAZZLE_FARMOS_API_CLIENT_ID,
@@ -18,25 +17,6 @@ export async function loginSchema() {
     const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
     return farm.remote.authorize(username, password);
   };
-  async function setFarmSchema() {
-    // Try the session storage first...
-    let schema = JSON.parse(localStorage.getItem('schema'));
-    if (schema == null) {
-      // Not in session storage, so fetch schema from the farmOS host.
-      await farm.schema.fetch();
-      schema = farm.schema.get();
-      // Cache in the session storage for next time.
-      localStorage.setItem('schema', JSON.stringify(schema));
-      await farm.schema.set(schema);
-    } else {
-      await farm.schema.set(schema);
-    }
-  }
   await APIlogin();
-  await setFarmSchema();
   return farm;
 }
-
-loginSchema.propTypes = {
-  properties: PropTypes.objectOf(PropTypes.any),
-};

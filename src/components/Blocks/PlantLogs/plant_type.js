@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { combineTwo } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/combineTwo';
 import { customizer } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/customizer';
-import { loginSchema } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/loginSchema';
+import schema from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/schema';
+
 const WholePlantTypeResponse = (props) => {
   const [newarray, setState2] = useState({});
   const [isAxiosBusy, setAxiosBusy] = useState(true);
 
   useEffect(() => {
     async function myResponse2(url, combodata) {
-      var farm = await loginSchema();
+      var farm = await schema();
       combodata = combodata || {};
       try {
         await farm.remote.request(url).then(async (response) => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { customizer } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/customizer';
-import { loginSchema } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/loginSchema';
+import schema from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/schema';
 
 const WholeDataResponse = (props) => {
   const { data } = props;
@@ -15,7 +15,7 @@ const WholeDataResponse = (props) => {
     var newarray = [];
 
     async function myResponse2(combodata) {
-      var farm = await loginSchema();
+      const farm = await schema();
       if ((typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') || (data?.log_type_selector === '' && data.plant_type_selector === '')) {
         setFilter(false);
       } else {
