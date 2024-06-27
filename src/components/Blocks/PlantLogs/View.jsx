@@ -66,7 +66,7 @@ const View = (props) => {
       </div>
     )
   ) : (
-    <div className="App">No Filter is set. Too many results. Please set at least one filter...</div>
+    <div className="App">No Type Filter is set. Too many results. Please set at least one Type Filter...</div>
   );
 };
 

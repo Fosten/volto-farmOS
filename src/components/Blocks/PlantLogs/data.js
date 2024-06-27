@@ -16,7 +16,7 @@ const WholeDataResponse = (props) => {
 
     async function myResponse2(combodata) {
       const farm = await schema();
-      if ((typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined') || (data?.log_type_selector === '' && data.plant_type_selector === '')) {
+      if ((typeof data?.log_type_selector == 'undefined' && typeof data?.plant_type_selector == 'undefined' && typeof data?.land_type_selector == 'undefined') || (data?.log_type_selector === '' && data.plant_type_selector === '' && data.land_type_selector === '')) {
         setFilter(false);
       } else {
         combodata = combodata || {};
@@ -28,6 +28,7 @@ const WholeDataResponse = (props) => {
             var filter = {
               type: data?.log_type_selector,
               'asset.plant_type.id': data?.plant_type_selector,
+              'location.land_type': data?.land_type_selector,
               timestamp: { $gte: startdate, $lte: enddate },
               status: data?.status_selector,
             };

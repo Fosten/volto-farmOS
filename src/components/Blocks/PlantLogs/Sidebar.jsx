@@ -4,6 +4,7 @@ import { Segment } from 'semantic-ui-react';
 import { injectIntl } from 'react-intl';
 import { SelectWidget, DatetimeWidget } from '@plone/volto/components';
 import WholePlantTypeResponse from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/plant_type';
+import WholeLandTypeResponse from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/land_type';
 
 const Sidebar = (props) => {
   const { data, block, onChangeBlock } = props;
@@ -22,13 +23,16 @@ const Sidebar = (props) => {
   const value = WholePlantTypeResponse(props);
   var newarray = value[0];
   var isAxiosBusy = value[1];
+  const valueL = WholeLandTypeResponse(props);
+  var landTypearray = valueL[0];
+  var isLandTypeBusy = valueL[1];
 
-  return isAxiosBusy ? (
+  return isAxiosBusy || isLandTypeBusy ? (
     <div className="App">Loading...</div>
   ) : (
     <Segment.Group raised>
       <header className="header pulled">
-        <h2>Select filters</h2>
+        <h2>Select Type Filters</h2>
       </header>
       <SelectWidget
         id="log_type_selector"
@@ -56,6 +60,22 @@ const Sidebar = (props) => {
           });
         }}
       />
+      <SelectWidget
+        id="land_type_selector"
+        title="Land Types"
+        required={false}
+        value={data.land_type_selector ?? ''}
+        choices={landTypearray}
+        onChange={(name, value) => {
+          onChangeBlock(block, {
+            ...data,
+            [name]: value,
+          });
+        }}
+      />
+      <header className="header pulled">
+        <h2>Select Status/Date filter</h2>
+      </header>
       <SelectWidget
         id="status_selector"
         title="Status"
