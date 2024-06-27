@@ -5,8 +5,8 @@ import { customizer } from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/cus
 import schema from '@Fosten/volto-farmOS/components/Blocks/PlantLogs/schema';
 
 const WholePlantTypeResponse = (props) => {
-  const [newarray, setState2] = useState({});
-  const [isAxiosBusy, setAxiosBusy] = useState(true);
+  const [plantTypearray, setState2] = useState({});
+  const [isPlantTypeBusy, setAxiosBusy] = useState(true);
 
   useEffect(() => {
     async function myResponse2(url, combodata) {
@@ -26,8 +26,8 @@ const WholePlantTypeResponse = (props) => {
           arr.push(ok2);
           arr.push(ok);
         }
-        const newarray = combineTwo(arr);
-        setState2(newarray);
+        const plantTypearray = combineTwo(arr);
+        setState2(plantTypearray);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err);
@@ -37,7 +37,7 @@ const WholePlantTypeResponse = (props) => {
     }
     myResponse2(`${window.env.RAZZLE_FARMOS_API_HOST}/api/taxonomy_term/plant_type?sort=name`);
   }, []);
-  return [newarray, isAxiosBusy];
+  return [plantTypearray, isPlantTypeBusy];
 };
 
 export default WholePlantTypeResponse;

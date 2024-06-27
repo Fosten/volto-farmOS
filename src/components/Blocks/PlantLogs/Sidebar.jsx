@@ -20,14 +20,14 @@ const Sidebar = (props) => {
     ['log--transplanting', 'log--transplanting'],
   ];
 
-  const value = WholePlantTypeResponse(props);
-  var newarray = value[0];
-  var isAxiosBusy = value[1];
+  const valueP = WholePlantTypeResponse(props);
+  var plantTypearray = valueP[0];
+  var isPlantTypeBusy = valueP[1];
   const valueL = WholeLandTypeResponse(props);
   var landTypearray = valueL[0];
   var isLandTypeBusy = valueL[1];
 
-  return isAxiosBusy || isLandTypeBusy ? (
+  return isPlantTypeBusy || isLandTypeBusy ? (
     <div className="App">Loading...</div>
   ) : (
     <Segment.Group raised>
@@ -52,7 +52,7 @@ const Sidebar = (props) => {
         title="Plant Types"
         required={false}
         value={data.plant_type_selector ?? ''}
-        choices={newarray}
+        choices={plantTypearray}
         onChange={(name, value) => {
           onChangeBlock(block, {
             ...data,
@@ -74,7 +74,7 @@ const Sidebar = (props) => {
         }}
       />
       <header className="header pulled">
-        <h2>Select Status/Date filter</h2>
+        <h2>Select Status/Date Filters</h2>
       </header>
       <SelectWidget
         id="status_selector"
@@ -117,7 +117,7 @@ const Sidebar = (props) => {
         }}
       />
       <header className="header pulled">
-        <h2>Select sort</h2>
+        <h2>Select Sort</h2>
       </header>
       <SelectWidget
         id="sort_selector"

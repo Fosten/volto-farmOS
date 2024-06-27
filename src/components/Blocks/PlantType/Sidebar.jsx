@@ -90,7 +90,7 @@ const Sidebar = (props) => {
         </header>
         <SelectWidget
           id="plant_type_selector"
-          title="Plant Typer"
+          title="Plant Type"
           required={true}
           value={data.plant_type_selector ?? false}
           choices={newarray}
