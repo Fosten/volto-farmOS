@@ -45,11 +45,10 @@ const WholeDataResponse = (props) => {
             const include = ['asset', 'location'];
             return farm.log.fetch({ filter, include, limit: 1 });
           });
-
           Promise.all(requests).then((responses) => {
             responses.forEach(async (respP) => {
               var {
-                data: [remoteLog, remoteAsset, remoteLocation],
+                data: [remoteLog, remoteAsset, remoteLocation, remoteLocation2, remoteLocation3, remoteLocation4, remoteLocation5],
               } = respP;
               if (typeof remoteLocation == 'undefined') {
                 remoteLocation = { attributes: { name: null } };
@@ -60,7 +59,7 @@ const WholeDataResponse = (props) => {
                   relationships: { plant_type: [{ id: null }] },
                 };
               }
-              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteLog?.attributes.timestamp];
+              const objectPName = [remoteLog?.attributes.name, remoteLog?.attributes.timestamp, remoteLog?.attributes.status, remoteAsset?.attributes.name, remoteLocation?.attributes.name, remoteLocation2?.attributes.name, remoteLocation3?.attributes.name, remoteLocation4?.attributes.name, remoteLocation5?.attributes.name];
               newlyarray.push(objectPName);
             });
             var okthen = { newlyarray };
