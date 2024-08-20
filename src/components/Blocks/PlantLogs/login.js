@@ -1,4 +1,5 @@
 import farmOS from '@farmOS/farmOS.js';
+import config from '@plone/volto/registry';
 
 export default async function login() {
   const remoteConfig = {
@@ -9,14 +10,10 @@ export default async function login() {
     getToken: () => JSON.parse(localStorage.getItem('token')),
     setToken: (token) => localStorage.setItem('token', JSON.stringify(token)),
   };
+
   const options = { remote: remoteConfig };
   const farm = farmOS(options);
 
-  const APIlogin = () => {
-    const username = window.env.RAZZLE_FARMOS_API_USERNAME;
-    const password = window.env.RAZZLE_FARMOS_API_PASSWORD;
-    return farm.remote.authorize(username, password);
-  };
-  await APIlogin();
+  await farm.remote.authorize(config.settings.farmUser, config.settings.farmPw);
   return farm;
 }
