@@ -46,7 +46,7 @@ const View = (props) => {
                   return (
                     <Table.Row key={i}>
                       <td>{item[0]}</td>
-                      <td>{item[1].substring(0, 10)}</td>
+                      <td>{item[1]?.substring(0, 10)}</td>
                       <td>{item[2]}</td>
                       <td>{item[3]}</td>
                       <td>{item[4]}</td>
