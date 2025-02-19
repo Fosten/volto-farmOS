@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "axios": "*",
-    "@farmOS/farmOS.js": "Fosten/farmOS.js#scope-secret"
+    "@farmOS/farmOS.js": "Fosten/farmOS.js#scope-secret",
+    "body-parser": "*"
   },
   "peerDependencies": {
     "react": "18.2.0",
