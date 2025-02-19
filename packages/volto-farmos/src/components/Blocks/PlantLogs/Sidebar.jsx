@@ -21,7 +21,7 @@ const Sidebar = (props) => {
     ['log--transplanting', 'log--transplanting'],
   ];
   useEffect(() => {
-    fetch('/filters')
+    fetch('/choices')
       .then(function (response) {
         return response.json();
       })
