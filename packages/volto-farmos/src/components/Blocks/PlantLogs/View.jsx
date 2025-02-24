@@ -39,17 +39,23 @@ const View = (props) => {
             },
             body: JSON.stringify(data), // Send data props in the request body
           });
-          const json = await response.json();
-          var propertyValues = Object.values(json)[0];
-          setState3(propertyValues);
-          setAxiosBusy(false);
+          return response;
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('Error fetching data:', error);
         }
       }
     };
-    fetchData();
+
+    const deliverData = async () => {
+      const response = await fetchData();
+      const json = await response.json();
+      var propertyValues = Object.values(json)[0];
+      setState3(propertyValues);
+      setAxiosBusy(false);
+    };
+
+    deliverData();
   }, [data]);
 
   const renderthis = () => {
@@ -80,7 +86,7 @@ const View = (props) => {
                     return (
                       <Table.Row key={i}>
                         <td>{item[0]}</td>
-                        <td>{item?.[1].substring(0, 10)}</td>
+                        <td>{item?.[1]?.substring(0, 10)}</td>
                         <td>{item[2]}</td>
                         <td>{item[3]}</td>
                         <td>{item[4]}</td>
