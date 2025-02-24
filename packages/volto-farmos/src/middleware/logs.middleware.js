@@ -11,13 +11,15 @@ export default async function FarmLogs(req, res, next) {
     let wdr;
     if (dataProps) {
       wdr = await WholeDataResponse(filterOK);
+      res.json({
+        wdr: await wdr,
+      });
     } else {
       wdr = await WholeDataResponse(filterNO);
+      res.json({
+        wdr: await wdr,
+      });
     }
-
-    res.json({
-      wdr: wdr,
-    });
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('Error in okgo function:', err);
