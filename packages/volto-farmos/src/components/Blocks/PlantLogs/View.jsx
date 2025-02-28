@@ -20,7 +20,7 @@ const View = (props) => {
   const [isAxiosBusy, setAxiosBusy] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    function fetchData() {
       if (
         (typeof data?.log_type_selector == 'undefined' &&
           typeof data?.plant_type_selector == 'undefined' &&
@@ -31,31 +31,22 @@ const View = (props) => {
       ) {
         setFilter(false);
       } else {
-        try {
-          const response = await fetch('/logs', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data), // Send data props in the request body
+        fetch('/logs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data), // Send data props in the request body
+        })
+          .then((response) => response.json())
+          .then((json) => {
+            const propertyValues = Object.values(json)?.[0];
+            setState3(propertyValues);
+            setAxiosBusy(false);
           });
-          return response;
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error fetching data:', error);
-        }
       }
-    };
-
-    const deliverData = async () => {
-      const response = await fetchData();
-      const json = await response.json();
-      var propertyValues = Object.values(json)[0];
-      setState3(propertyValues);
-      setAxiosBusy(false);
-    };
-
-    deliverData();
+    }
+    fetchData();
   }, [data]);
 
   const renderthis = () => {

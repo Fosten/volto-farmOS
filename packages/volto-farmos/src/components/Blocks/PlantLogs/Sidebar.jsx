@@ -21,20 +21,18 @@ const Sidebar = (props) => {
     ['log--transplanting', 'log--transplanting'],
   ];
   useEffect(() => {
-    fetch('/choices')
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (json) {
-        return json;
-      })
-      .then((json) => {
-        const landTypearray = Object.values(json)[0];
-        setState3(landTypearray);
-        const plantTypearray = Object.values(json)[1];
-        setState4(plantTypearray);
-        setAxiosBusy(false);
-      });
+    function fetchData() {
+      fetch('/choices')
+        .then((response) => response.json())
+        .then((json) => {
+          const landTypearray = Object.values(json)[0];
+          setState3(landTypearray);
+          const plantTypearray = Object.values(json)[1];
+          setState4(plantTypearray);
+          setAxiosBusy(false);
+        });
+    }
+    fetchData();
   }, []);
 
   const renderthis = () => {
