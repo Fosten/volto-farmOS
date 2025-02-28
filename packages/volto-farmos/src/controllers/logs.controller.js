@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import APISchema from './schema.controller';
 import { customizer } from '../helpers/customizer.helper';
+import config from '@plone/volto/registry';
 
 const WholeDataResponse = async function (filterOK, props) {
-  const farm = await APISchema();
+  const farm = await config.settings.farmschema();
   let y = 0;
   let n = 20;
   var newarray = [];

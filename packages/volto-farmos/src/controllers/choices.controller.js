@@ -2,10 +2,9 @@ import config from '@plone/volto/registry';
 import _ from 'lodash';
 import { combineTwo } from '../helpers/combineTwo.helper';
 import { customizer } from '../helpers/customizer.helper';
-import APISchema from './schema.controller';
 
 const WholeTypeResponse = async function (props) {
-  const farm = await APISchema();
+  const farm = await config.settings.farmschema();
   const WholeLandTypeResponse = async function (url, combodata) {
     combodata = combodata || {};
     try {

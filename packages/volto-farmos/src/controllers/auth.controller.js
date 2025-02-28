@@ -1,12 +1,11 @@
-import config from '@plone/volto/registry';
 import farmOS from '@farmOS/farmOS.js';
 
 const APILogin = async function () {
   const remoteConfig = {
-    host: config.settings.farmhost,
-    clientId: config.settings.farmclientId,
-    clientSecret: config.settings.farmclientSecret,
-    scope: config.settings.farmscope,
+    host: process.env.FARMOS_API_HOST,
+    clientId: process.env.FARMOS_API_CLIENT_ID,
+    clientSecret: process.env.FARMOS_API_CLIENT_SECRET,
+    scope: process.env.FARMOS_API_SCOPE,
   };
   const options = { remote: remoteConfig };
   const farm = await farmOS(options);
