@@ -1,16 +1,13 @@
 import _ from 'lodash';
 import { customizer } from '../helpers/customizer.helper';
-import config from '@plone/volto/registry';
 
-const WholeDataResponse = async function (filterOK, props) {
-  const farm = await config.settings.farmschema();
+const WholeDataResponse = async function (filterOK, farm) {
   let y = 0;
   let n = 20;
   var newarray = [];
   const filter = filterOK[0];
   const order = filterOK[1];
   const filtertype = filter['type'];
-
   const DataResponse = async function (combodata) {
     try {
       await farm.log

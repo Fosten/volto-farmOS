@@ -1,6 +1,5 @@
 import '@plone/volto/config';
 import customBlocks from './components/Blocks/customBlocks';
-import customSettings from './components/Blocks/customSettings';
 
 const applyConfig = (config) => {
   if (__SERVER__) {
@@ -20,10 +19,7 @@ const applyConfig = (config) => {
       ...customBlocks,
     },
   };
-  config.settings = {
-    ...config.settings,
-    ...customSettings,
-  };
+
   return config;
 };
 

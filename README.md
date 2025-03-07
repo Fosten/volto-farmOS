@@ -23,8 +23,8 @@ Modify the ENV_FILE Github environment secret of the Plone Project that deploys 
 ```shell
 FARMOS_API_HOST=https://url:port
 FARMOS_API_CLIENT_ID=clientid
-FARMOS_API_CLIENT_SECRET=clientsecret
-FARMOS_API_SCOPE=clientscope
+FARMOS_API_USERNAME=username
+FARMOS_API_PASSWORD=password
 ```
 
 ## Installation

@@ -1,10 +1,8 @@
-import config from '@plone/volto/registry';
 import _ from 'lodash';
 import { combineTwo } from '../helpers/combineTwo.helper';
 import { customizer } from '../helpers/customizer.helper';
 
-const WholeTypeResponse = async function (props) {
-  const farm = await config.settings.farmschema();
+const WholeTypeResponse = async function (farm, props) {
   const WholeLandTypeResponse = async function (url, combodata) {
     combodata = combodata || {};
     try {
@@ -29,7 +27,7 @@ const WholeTypeResponse = async function (props) {
     }
   };
   const ltr = await WholeLandTypeResponse(
-    `${config.settings.farmhost}/api/land_type/land_type?sort=label`,
+    `${process.env.FARMOS_API_HOST}/api/land_type/land_type?sort=label`,
   );
 
   const WholePlantTypeResponse = async function (url, combodata) {
@@ -59,7 +57,7 @@ const WholeTypeResponse = async function (props) {
     }
   };
   const ptr = await WholePlantTypeResponse(
-    `${config.settings.farmhost}/api/taxonomy_term/plant_type?sort=name`,
+    `${process.env.FARMOS_API_HOST}/api/taxonomy_term/plant_type?sort=name`,
   );
   return [ltr, ptr];
 };

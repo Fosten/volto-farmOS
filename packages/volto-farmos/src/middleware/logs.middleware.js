@@ -7,22 +7,19 @@ export default async function FarmLogs(req, res, next) {
     const dataProps = req.body; // Read data props from the request body
     const filterOK = await SetFilter(dataProps); // Pass data props to SetFilter
     const filterNO = SetStaticFilter();
-
     let wdr;
+    const farmData = req.farm;
+
     if (dataProps) {
-      wdr = await WholeDataResponse(filterOK);
-      res.json({
-        wdr: await wdr,
-      });
+      wdr = await WholeDataResponse(filterOK, farmData);
+      return res.json({ wdr });
     } else {
-      wdr = await WholeDataResponse(filterNO);
-      res.json({
-        wdr: await wdr,
-      });
+      wdr = await WholeDataResponse(filterNO, farmData);s
+      return res.json({ wdr });
     }
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error('Error in okgo function:', err);
+    console.error('Error in FarmLogs function:', err);
     res.status(500).send(err);
   }
 }

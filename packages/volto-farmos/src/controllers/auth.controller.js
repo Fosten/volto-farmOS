@@ -1,16 +1,18 @@
-import farmOS from '@farmOS/farmOS.js';
+import farmOS from 'farmos';
 
-const APILogin = async function () {
-  const remoteConfig = {
-    host: process.env.FARMOS_API_HOST,
-    clientId: process.env.FARMOS_API_CLIENT_ID,
-    clientSecret: process.env.FARMOS_API_CLIENT_SECRET,
-    scope: process.env.FARMOS_API_SCOPE,
-  };
-  const options = { remote: remoteConfig };
-  const farm = await farmOS(options);
-  await farm.remote.authorize();
-  return farm;
+let token = {};
+const remoteConfig = {
+  host: process.env.FARMOS_API_HOST,
+  clientId: process.env.FARMOS_API_CLIENT_ID,
+  getToken: () => token,
+  setToken: (t) => {
+    token = t;
+  },
 };
+const options = { remote: remoteConfig };
 
-export default APILogin;
+export const farm = farmOS(options);
+export const session = farm.remote.authorize(
+  process.env.FARMOS_API_USERNAME,
+  process.env.FARMOS_API_PASSWORD,
+);
