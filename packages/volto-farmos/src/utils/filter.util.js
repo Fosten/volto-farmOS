@@ -21,19 +21,14 @@ const SetFilter = async function (dataProps) {
     };
     return [filter, order];
   } else {
-    try {
-      let filter = {
-        type: data?.log_type_selector,
-        'asset.plant_type.id': data?.plant_type_selector,
-        'location.land_type': data?.land_type_selector,
-        timestamp: { $gte: startdate, $lte: enddate },
-        status: data?.status_selector,
-      };
-      return [filter, order];
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Error in SetFilter function:', err);
-    }
+    let filter = {
+      type: data?.log_type_selector,
+      'asset.plant_type.id': data?.plant_type_selector,
+      'location.land_type': data?.land_type_selector,
+      timestamp: { $gte: startdate, $lte: enddate },
+      status: data?.status_selector,
+    };
+    return [filter, order];
   }
 };
 export default SetFilter;
