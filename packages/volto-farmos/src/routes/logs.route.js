@@ -4,8 +4,13 @@ import { farm, session } from '../controllers/auth.controller';
 
 // Load APISchema once during initialization
 async function initializeFarm() {
-  await session;
-  APISchema(farm);
+  try {
+    await session;
+    APISchema(farm);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred during initialization:', error);
+  }
 }
 
 // Call initializeFarm once at startup
