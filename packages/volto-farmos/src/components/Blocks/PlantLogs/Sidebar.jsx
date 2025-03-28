@@ -20,6 +20,11 @@ const Sidebar = (props) => {
     ['log--seeding', 'log--seeding'],
     ['log--transplanting', 'log--transplanting'],
   ];
+  const logcategories = [
+    ['Gardening', 'Gardening'],
+    ['Fruit Trees', 'Fruit Trees'],
+    ['Nut Trees', 'Nut Trees'],
+  ];
   useEffect(() => {
     function fetchData() {
       fetch('/choices')
@@ -49,6 +54,19 @@ const Sidebar = (props) => {
           required={false}
           value={data.log_type_selector ?? ''}
           choices={logchoices}
+          onChange={(name, value) => {
+            onChangeBlock(block, {
+              ...data,
+              [name]: value,
+            });
+          }}
+        />
+        <SelectWidget
+          id="log_category_selector"
+          title="Log Categories"
+          required={false}
+          value={data.log_category_selector ?? ''}
+          choices={logcategories}
           onChange={(name, value) => {
             onChangeBlock(block, {
               ...data,

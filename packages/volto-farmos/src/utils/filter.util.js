@@ -25,6 +25,7 @@ const SetFilter = async function (dataProps) {
       type: data?.log_type_selector,
       'asset.plant_type.id': data?.plant_type_selector,
       'location.land_type': data?.land_type_selector,
+      'category.name': data?.log_category_selector,
       timestamp: { $gte: startdate, $lte: enddate },
       status: data?.status_selector,
     };
