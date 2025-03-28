@@ -17,14 +17,13 @@ async function initializeFarm() {
 initializeFarm();
 
 export default function FarmLogsRoute() {
-  const bodyParser = require('body-parser');
   const express = require('express');
   const middleware = express.Router();
 
   // Parse incoming requests with JSON payloads
-  middleware.use(bodyParser.json());
+  middleware.use(express.json({ limit: '1mb' }));
   // Parse incoming requests with urlencoded payloads
-  middleware.use(bodyParser.urlencoded({ extended: true }));
+  middleware.use(express.urlencoded({ limit: '1mb', extended: true }));
 
   // Middleware to handle farm initialization and updates
   middleware.use((req, res, next) => {

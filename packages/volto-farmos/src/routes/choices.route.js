@@ -1,13 +1,13 @@
 import FarmChoices from '../middleware/choices.middleware';
 
 export default function FarmChoicesRoute() {
-  const bodyParser = require('body-parser');
   const express = require('express');
   const middleware = express.Router();
+
   // Parse incoming requests with JSON payloads
-  middleware.use(bodyParser.json());
+  middleware.use(express.json({ limit: '1mb' }));
   // Parse incoming requests with urlencoded payloads
-  middleware.use(bodyParser.urlencoded({ extended: true }));
+  middleware.use(express.urlencoded({ limit: '1mb', extended: true }));
 
   middleware.all('/choices', FarmChoices);
   middleware.id = 'farmchoices';
