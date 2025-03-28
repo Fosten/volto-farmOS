@@ -24,6 +24,7 @@ const Sidebar = (props) => {
     ['Gardening', 'Gardening'],
     ['Fruit Trees', 'Fruit Trees'],
     ['Nut Trees', 'Nut Trees'],
+    ['Bloom', 'Bloom'],
   ];
   useEffect(() => {
     function fetchData() {
