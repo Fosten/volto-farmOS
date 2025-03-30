@@ -13,12 +13,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- towncrier release notes start -->
 
-# 1.2.0 (2024-10-26)
+## 2.1.0 (2025-03-30)
+
+- Update CHANGELOG.md [fosten]
+- Bump package.json versions to 2.1.0 [fosten]
+- Bump Volto from 18.0.0-alpha.47 to 18.10.1 [fosten]
+- Replace body-parser with express [fosten]
+- Add log_category_selector [fosten]
+- Catch connect error on initialization [fosten]
+- Load APISchema once during middleware initialization [fosten]
+- Add express.js middleware [fosten]
+- corepack signature verfication workaround [fosten]
+- Remove PlantAssets volto block [fosten]
+- Remove PlantType volto block [fosten]
+- Check if timestamp is defined [fosten]
+
+## 2.0.0 (2024-10-28)
+
+- Bump Volto from 18.0.0-alpha.46 to 18.0.0-alpha.47 [fosten]
+- Update .eslintrc.js and storybook/main.js [fosten]
+- Refactor using cookieplone [fosten]
+
+## 1.2.0 (2024-10-26)
 
 - Add CHANGELOG.md [fosten]
 - Add customSettings.js [fosten]
 
-# 1.1.0 (2024-06-27)
+## 1.1.0 (2024-06-27)
 
 - Add multiple locations [fosten]
 - Add land_type_selector [fosten]
@@ -33,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add PlantLogs block [fosten]
 - Replace farm.remote.request with farm.asset.fetch [fosten]
 
-# 1.0.0 (2024-06-06)
+## 1.0.0 (2024-06-06)
 
 - Replace axiosClient.get with farm.remote.request [fosten]
 - Store combodata IDs and URLs in arrays [fosten]
@@ -45,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add customizer function, require lodash [fosten]
 - Limit response2 response3 to data.attributes.name [fosten]
 
-# 0.2.0 (2023-07-28)
+## 0.2.0 (2023-07-28)
 
 - Create APIlogin [fosten]
 - Add PlantType volto block [fosten]
@@ -54,6 +75,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add farmOS.js dependency [fosten]
 - Add PlantAssets block [fosten]
 
-# 0.1.0 (2023-04-13)
+## 0.1.0 (2023-04-13)
 
 - Initial commit [fosten]

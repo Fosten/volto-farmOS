@@ -1,1 +1,0 @@
-Refactor using cookieplone @fosten
