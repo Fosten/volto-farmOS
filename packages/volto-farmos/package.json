@@ -1,6 +1,6 @@
 {
   "name": "volto-farmos",
-  "version": "2.0.0-alpha.0",
+  "version": "2.1.0",
   "description": "Volto add-on to pull data from the farmOS API",
   "main": "src/index.js",
   "license": "MIT",

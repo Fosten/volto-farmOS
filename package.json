@@ -1,6 +1,6 @@
 {
   "name": "volto-farmos-dev",
-  "version": "1.0.0-alpha.0",
+  "version": "2.1.0",
   "description": "Volto add-on to pull data from the farmOS API",
   "author": "Brian Davis",
   "homepage": "https://github.com/fosten/volto-farmos",
