@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add Dependabot [fosten]
 - Bump Volto from 18.10.1 to 19.0.0-alpha.2 [fosten]
 
 ## 2.1.0 (2025-03-30)
