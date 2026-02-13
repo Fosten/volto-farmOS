@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "axios": "*",
-    "farmos": "*",
+    "farmos": "Fosten/farmOS.js#lockfile-update",
     "body-parser": "*"
   },
   "peerDependencies": {
