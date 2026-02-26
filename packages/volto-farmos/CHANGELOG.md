@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Replace babel-preset-razzle with @plone/babel-preset-razzle [fosten]
 - Use farmOS.js forked branch lockfile-update [fosten]
 - Add footer links to CHANGELOG.md [fosten]
 - Add Dependabot [fosten]
