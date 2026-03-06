@@ -4,6 +4,7 @@ let token = {};
 const remoteConfig = {
   host: process.env.FARMOS_API_HOST,
   clientId: process.env.FARMOS_API_CLIENT_ID,
+  scope: process.env.FARMOS_API_SCOPE,
   getToken: () => token,
   setToken: (t) => {
     token = t;

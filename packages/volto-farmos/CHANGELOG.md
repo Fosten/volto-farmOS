@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add envar FARMOS_API_SCOPE [fosten]
 - Use farmOS.js forked branch pw-grant-scope [fosten]
 - Revert to farmOS.js main branch [fosten]
 - Bump pnpm from 9.1.1 to 10.20.0 [fosten]
