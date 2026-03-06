@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "axios": "*",
-    "farmos": "*",
+    "farmos": "Fosten/farmOS.js#pw-grant-scope",
     "body-parser": "*"
   },
   "peerDependencies": {
