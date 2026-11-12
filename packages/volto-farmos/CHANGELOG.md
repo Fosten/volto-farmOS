@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Bump Volto from 19.1.5 to 19.7.0 [fosten]
 - Replace @plone/babel-preset-razzle/webpack-plugins with @plone/volto/webpack-plugins [fosten]
 - Add .pnpmfile.cjs [fosten]
 - Bump Node from 22 to 26 [fosten]

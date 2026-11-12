@@ -4,6 +4,6 @@
     "package": "@plone/volto",
     "url": "git@github.com:plone/volto.git",
     "https": "https://github.com/plone/volto.git",
-    "tag": "19.1.5"
+    "tag": "19.7.0"
   }
 }
