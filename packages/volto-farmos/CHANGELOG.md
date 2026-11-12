@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add .pnpmfile.cjs [fosten]
 - Bump Node from 22 to 26 [fosten]
 - Add envar FARMOS_API_SCOPE [fosten]
 - Use farmOS.js forked branch pw-grant-scope [fosten]
